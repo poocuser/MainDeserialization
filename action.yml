@@ -34,11 +34,11 @@ runs:
         echo Github action path ${{github.action_path}}
         echo Github WORKSPACE path  $GITHUB_WORKSPACE
       shell: bash
-    - name: Download Tabular Editor
-      run: | 
-          $TabularEditorUrl = "https://cdn.tabulareditor.com/files/te2/TabularEditor.Portable.zip" 
-          $DownloadDestination = Join-Path (Get-Location) "TabularEditor.zip"
-          Invoke-WebRequest -Uri $TabularEditorUrl -OutFile $DownloadDestination
-          Expand-Archive -Path $DownloadDestination -DestinationPath (Get-Location).Path
-          Remove-Item $DownloadDestination
-      shell: pwsh
+    #- name: Download Tabular Editor
+      #run: | 
+          #$TabularEditorUrl = "https://cdn.tabulareditor.com/files/te2/TabularEditor.Portable.zip" 
+          #$DownloadDestination = Join-Path (Get-Location) "TabularEditor.zip"
+          #Invoke-WebRequest -Uri $TabularEditorUrl -OutFile $DownloadDestination
+          #Expand-Archive -Path $DownloadDestination -DestinationPath (Get-Location).Path
+          #Remove-Item $DownloadDestination
+      #shell: pwsh
