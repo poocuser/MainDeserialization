@@ -4,6 +4,8 @@ import sys
 import os.path
 
 
+print("Hello World Fucker")
+
 ILLEGAL_PATH_CHARACTERS = {'<', '>', ':', '/', '\\', '|', '?', '*', '(', ')'}
 
 
