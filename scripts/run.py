@@ -20,13 +20,13 @@ def parse_json(json_struct):
 
 def main():
     print("Hello sys.argv[2]" + sys.argv[2])
-    print("Hello sys.argv[2]" + sys.argv[1])
+    print("Hello sys.argv[1]" + sys.argv[1])
     separator = sys.argv[2]
     file_list = sys.argv[1].split(separator)
-    print("Hello file_list" + file_list)
+    
     for file in file_list:
-
         if file.endswith('.json') and os.path.exists(file):
+            print("INSIDE JSON IF!!!")
             with open(file, 'r', encoding='utf-8-sig') as f:
                 json_str = json.dumps(json.load(f), indent=4)
             with open(file, 'w') as f:
@@ -34,7 +34,7 @@ def main():
             print('Pretty Printed {}'.format(file))
 
         if (file.endswith('.pbix') or file.endswith('.pbit')) and os.path.exists(file):
-
+            print("INSIDE PBIX IF!!!")
             json_dir_path = file[:-5]
 
 
