@@ -27,7 +27,7 @@ def main():
     
     for file in file_list:
         print (file)
-        if file.endswith('.json'): #and os.path.exists(file):
+        if file.endswith('.json') and os.path.exists(file):
             print("INSIDE JSON IF!!!")
             with open(file, 'r', encoding='utf-8-sig') as f:
                 json_str = json.dumps(json.load(f), indent=4)
