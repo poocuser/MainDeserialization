@@ -28,8 +28,7 @@ runs:
     - run: |
         cd $GITHUB_ACTION_PATH
         ls
-        python print('Welcome to Real Python!')
-        chmod +x scripts/run.py
+        git update-index --chmod=+x scripts/run.py
         python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }}
         echo SEPARATOR ${{ inputs.separator }}.
         echo FILES ${{ inputs.files }}.
