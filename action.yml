@@ -29,5 +29,5 @@ runs:
         cd ${{ github.action_path }}
         ls
         chmod +x scripts/run.py
-        python scripts/run.py "$1" $2
+        python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }}
       shell: bash
