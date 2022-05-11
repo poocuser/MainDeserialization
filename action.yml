@@ -30,4 +30,6 @@ runs:
         ls
         chmod +x scripts/run.py
         python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }}
+        echo SEPARATOR ${{ inputs.separator }}.
+        echo FILES ${{ inputs.files }}.
       shell: bash
