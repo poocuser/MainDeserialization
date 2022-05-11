@@ -29,6 +29,7 @@ def main():
     for file in file_list:
         print ('File iteration', file)
         #print(os.path.exists("/home/runner/work/PBI-Template/PBI-Template/"+file))
+        #print(os.path.exists("D:\a\PBI-Template\PBI-Template\"+file))
         #directory = os.getcwd()
         #print(directory)
         file = sys.argv[3]+chr(92)+file

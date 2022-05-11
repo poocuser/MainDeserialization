@@ -32,7 +32,7 @@ runs:
         echo SEPARATOR ${{ inputs.separator }}
         echo FILES ${{ inputs.files }}
         echo Github action path ${{github.action_path}}
-        echo Github WORKSPACE path  ${{github.workspace}}
+        echo Github WORKSPACE path  $GITHUB_WORKSPACE
       shell: bash
     - name: Download Tabular Editor
       run: | 
