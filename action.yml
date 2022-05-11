@@ -22,4 +22,5 @@ runs:
     - run: |
         cd ${{ github.action_path }}
         ls
+        /scripts/run.py
       shell: bash
