@@ -52,8 +52,8 @@ runs:
         PBI_TENANT_ID: ${{ secrets.PBI_TENANT_ID }}
         PBI_CLIENT_ID: ${{ secrets.PBI_CLIENT_ID }}
         PBI_CLIENT_SECRET: ${{ secrets.PBI_CLIENT_SECRET }}
-        PBI_USER_NAME: ${{ secrets.PBI_USER_NAME }}
-        PBI_USER_PASSWORD: ${{ secrets.PBI_USER_PASSWORD }}
+        #PBI_USER_NAME: ${{ secrets.PBI_USER_NAME }}
+        #PBI_USER_PASSWORD: ${{ secrets.PBI_USER_PASSWORD }}
       run: |
             Write-Information "Fucking START HERE!!!!!"
             # halt on first error
@@ -90,17 +90,17 @@ runs:
 
               Connect-PowerBIServiceAccount -Credential $credential -ServicePrincipal -TenantId $tenant_id
             }
-            else {
-              Write-Information "Using Username/Password authentication!"
-              $user_name = $env:PBI_USER_NAME
-              $user_password = $env:PBI_USER_PASSWORD
-              $login_info = "User ID=$user_name;Password=$user_password"
+            #else {
+              #Write-Information "Using Username/Password authentication!"
+              #$user_name = $env:PBI_USER_NAME
+              #$user_password = $env:PBI_USER_PASSWORD
+              #$login_info = "User ID=$user_name;Password=$user_password"
 
-              [securestring]$sec_user_password = ConvertTo-SecureString $user_password -AsPlainText -Force
-              [pscredential]$credential = New-Object System.Management.Automation.PSCredential ($user_name, $sec_user_password)
+              #[securestring]$sec_user_password = ConvertTo-SecureString $user_password -AsPlainText -Force
+              #[pscredential]$credential = New-Object System.Management.Automation.PSCredential ($user_name, $sec_user_password)
 
-              Connect-PowerBIServiceAccount -Credential $credential
-            }
+              #Connect-PowerBIServiceAccount -Credential $credential
+            #}
 
             $workspace = Get-PowerBIWorkspace -Id $workspace_id
             Write-Information "Power BI Workspace: `n$($workspace | ConvertTo-Json)"
