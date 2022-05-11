@@ -26,7 +26,8 @@ def main():
     file_list = sys.argv[1].split(separator)
     
     for file in file_list:
-        print (file)
+        print ('File iteration', file)
+        os.stat('state', file)
         if file.endswith('.json') and os.path.exists(file):
             print("INSIDE JSON IF!!!")
             with open(file, 'r', encoding='utf-8-sig') as f:
