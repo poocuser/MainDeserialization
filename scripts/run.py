@@ -28,10 +28,10 @@ def main():
     
     for file in file_list:
         print ('File iteration', file)
-        print(os.path.exists("/home/runner/work/PBI-Template/PBI-Template/"+file))
+        #print(os.path.exists("/home/runner/work/PBI-Template/PBI-Template/"+file))
         directory = os.getcwd()
         print(directory)
-        if file.endswith('.json') and os.path.exists(file):
+        if file.endswith('.json') and os.path.exists(sys.argv[3]+"/"+file):
             print("INSIDE JSON IF!!!")
             with open(file, 'r', encoding='utf-8-sig') as f:
                 json_str = json.dumps(json.load(f), indent=4)
@@ -39,7 +39,7 @@ def main():
                 f.write(json_str)
             print('Pretty Printed {}'.format(file))
 
-        if (file.endswith('.pbix') or file.endswith('.pbit')) and os.path.exists(file):
+        if (file.endswith('.pbix') or file.endswith('.pbit')) and os.path.exists(sys.argv[3]+"/"+file):
             print("INSIDE PBIX IF!!!")
             json_dir_path = file[:-5]
 
