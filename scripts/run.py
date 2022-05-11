@@ -31,7 +31,7 @@ def main():
         #print(os.path.exists("/home/runner/work/PBI-Template/PBI-Template/"+file))
         #directory = os.getcwd()
         #print(directory)
-        sys.argv[3]+"/"+file
+        file = sys.argv[3]+"/"+file
         if file.endswith('.json') and os.path.exists(file):
             print("INSIDE JSON IF!!!")
             with open(file, 'r', encoding='utf-8-sig') as f:
