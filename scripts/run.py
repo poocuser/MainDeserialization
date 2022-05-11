@@ -21,16 +21,17 @@ def parse_json(json_struct):
 
 def main():
     print("Hello sys.argv[2]" + sys.argv[2])
-    print("Hello sys.argv[3]!!!!" + sys.argv[3])
+    #print("Hello sys.argv[3]!!!!" + sys.argv[3])
     print("Hello sys.argv[1]" + sys.argv[1])
     separator = sys.argv[2]
     file_list = sys.argv[1].split(separator)
     
     for file in file_list:
         print ('File iteration', file)
+        print(os.path.exists("/home/runner/work/PBI-Template/PBI-Template/"+file))
         directory = os.getcwd()
         print(directory)
-        if file.endswith('.json') and os.path.exists(directory+"/"+file):
+        if file.endswith('.json') and os.path.exists(file):
             print("INSIDE JSON IF!!!")
             with open(file, 'r', encoding='utf-8-sig') as f:
                 json_str = json.dumps(json.load(f), indent=4)
