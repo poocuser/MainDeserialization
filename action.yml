@@ -28,7 +28,9 @@ runs:
     - run: |
         cd $GITHUB_ACTION_PATH
         ls
-        python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }}
-        echo SEPARATOR ${{ inputs.separator }}.
-        echo FILES ${{ inputs.files }}.
       shell: bash
+    - name: ExtractionReports
+      uses: docker://python:3.9-alpine
+      with:
+        entrypoint:  ["/entrypoint.sh"] # command executable that need to be run in a container
+        args:  ["chmod", "+x", "/entrypoint.sh"] # args of the command that need to be run in a container
