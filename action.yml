@@ -5,6 +5,12 @@ inputs:
     description: 'Who to greet'
     required: true
     default: 'World'
+  files:
+    description: 'Assets to format'
+    required: true
+  separator:
+    description: 'The character used to seperate file names'
+    required: true
 outputs:
   random-number:
     description: "Random number"
@@ -23,5 +29,5 @@ runs:
         cd ${{ github.action_path }}
         ls
         chmod +x scripts/run.py
-        python scripts/run.py
+        python scripts/run.py "$1" $2
       shell: bash
