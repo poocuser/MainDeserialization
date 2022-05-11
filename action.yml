@@ -48,7 +48,7 @@ runs:
         GIT_EVENT_AFTER: ${{ github.event.after }}
         GIT_TRIGGER_NAME: ${{ github.event_name }}
         MANUAL_TRIGGER_PATH_FILTER: ${{ github.event.inputs.path_filter }}
-        PBI_PREMIUM_WORKSPACE_ID: ${{ secrets.PBI_PREMIUM_WORKSPACE_ID }}
+        PBI_PREMIUM_WORKSPACE_ID: ${{ inputs.PBI_PREMIUM_WORKSPACE_ID }}
         PBI_TENANT_ID: ${{ secrets.PBI_TENANT_ID }}
         PBI_CLIENT_ID: ${{ secrets.PBI_CLIENT_ID }}
         PBI_CLIENT_SECRET: ${{ secrets.PBI_CLIENT_SECRET }}
