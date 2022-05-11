@@ -5,7 +5,7 @@ import os.path
 from os.path import exists
 
 
-print("Hello World Fucker")
+print("Hello Mother Fucker")
 
 ILLEGAL_PATH_CHARACTERS = {'<', '>', ':', '/', '\\', '|', '?', '*', '(', ')'}
 
