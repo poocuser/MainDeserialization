@@ -42,7 +42,7 @@ runs:
           Expand-Archive -Path $DownloadDestination -DestinationPath (Get-Location).Path
           Remove-Item $DownloadDestination
       shell: pwsh
-    - name: Extract BIM from PBIX
+    - name: Extract TOM from PBIX
       env:
         GIT_EVENT_BEFORE: ${{ github.event.before }}
         GIT_EVENT_AFTER: ${{ github.event.after }}
