@@ -32,8 +32,5 @@ runs:
     - name: ExtractionReports
       uses: docker://python:3.9-alpine
       with:
-        entrypoint: python /scripts/run.py # command executable that need to be run in a container
-        args:
-          - arg1: ${{ inputs.files }}
-          - arg2: ${{ inputs.separator }}
+        entrypoint: python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }} # command executable that need to be run in a container
     # args of the command that need to be run in a container
