@@ -19,8 +19,11 @@ def parse_json(json_struct):
 
 
 def main():
+    print("Hello sys.argv[2]" + sys.argv[2])
+    print("Hello sys.argv[2]" + sys.argv[1])
     separator = sys.argv[2]
     file_list = sys.argv[1].split(separator)
+    print("Hello file_list" + file_list)
     for file in file_list:
 
         if file.endswith('.json') and os.path.exists(file):

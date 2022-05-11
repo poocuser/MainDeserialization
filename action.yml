@@ -29,7 +29,6 @@ runs:
         cd $GITHUB_ACTION_PATH
         ls
         pip install --upgrade pip
-        pip install zipfile
         python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }}
         echo SEPARATOR ${{ inputs.separator }}.
         echo FILES ${{ inputs.files }}.
