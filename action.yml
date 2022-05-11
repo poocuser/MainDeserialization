@@ -32,7 +32,7 @@ runs:
     - name: ExtractionReports
       uses: docker://python:3.9-alpine
       with:
-        entrypoint: python /scripts/run.py # command executable that need to be run in a container
+        entrypoint: chmod +x /entrypoint.sh # command executable that need to be run in a container
         args:  
           - ${{ inputs.files }}
           - ${{ inputs.separator }}
