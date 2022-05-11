@@ -29,7 +29,7 @@ def main():
         print ('File iteration', file)
         directory = os.getcwd()
         print(directory)
-        if file.endswith('.json') and os.path.exists(file):
+        if file.endswith('.json') and os.path.exists(directory+"/"+file):
             print("INSIDE JSON IF!!!")
             with open(file, 'r', encoding='utf-8-sig') as f:
                 json_str = json.dumps(json.load(f), indent=4)
