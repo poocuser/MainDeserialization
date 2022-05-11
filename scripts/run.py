@@ -2,6 +2,7 @@ import zipfile
 import json
 import sys
 import os.path
+from os.path import exists
 
 
 print("Hello World Fucker")
@@ -25,6 +26,7 @@ def main():
     file_list = sys.argv[1].split(separator)
     
     for file in file_list:
+        print (file)
         if file.endswith('.json') and os.path.exists(file):
             print("INSIDE JSON IF!!!")
             with open(file, 'r', encoding='utf-8-sig') as f:
