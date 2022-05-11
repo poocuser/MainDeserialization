@@ -11,6 +11,9 @@ inputs:
   separator:
     description: 'The character used to seperate file names'
     required: true
+  composite-path:
+    description: 'Composire directory path'
+    required: true
 outputs:
   random-number:
     description: "Random number"
@@ -25,7 +28,7 @@ runs:
     - run: |
         cd $GITHUB_ACTION_PATH
         ls
-        python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }}
+        python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }} ${{ inputs.composite-path }}
         echo SEPARATOR ${{ inputs.separator }}
         echo FILES ${{ inputs.files }}
         echo Github action path ${{github.action_path}}
