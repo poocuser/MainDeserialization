@@ -3,7 +3,7 @@ Param(
     [Parameter(Mandatory = $false)][String]$Username,
     [Parameter(Mandatory = $false)][String]$FilePattern,
     [Parameter(Mandatory = $true)][String]$ClientID,
-    [Parameter(Mandatory = $false)][String]$PasswordString,
+    #[Parameter(Mandatory = $false)][String]$PasswordString,
     [Parameter(Mandatory = $true)][String]$WorkspaceName,
     [Parameter(Mandatory = $false)][Boolean]$Overwrite,
     [Parameter(Mandatory = $false)][Boolean]$Create,
