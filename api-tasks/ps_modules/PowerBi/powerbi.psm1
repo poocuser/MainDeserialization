@@ -457,7 +457,7 @@ Function Import-PowerBIFile {
 
     Try {
  
-    $result = Invoke-API -Url $url -Method "Post" -AccessToken $AccessToken -Body $body -ContentType "multipart/form-data; boundary=--$boundary"
+    Invoke-API -Url $url -Method "Post" -AccessToken $AccessToken -Body $body -ContentType "multipart/form-data; boundary=--$boundary"
 
     }
     catch [Net.WebException] {
