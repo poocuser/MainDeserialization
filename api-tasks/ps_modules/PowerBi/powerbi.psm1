@@ -454,8 +454,23 @@ Function Import-PowerBIFile {
     $body = $powerBiBodyTemplate -f $boundary, $fileName, $encoding.GetString($fileBytes)
 
     Write-Host "powerBiBodyTemplate-----------"$powerBiBodyTemplate
+
+    Try {
  
     $result = Invoke-API -Url $url -Method "Post" -AccessToken $AccessToken -Body $body -ContentType "multipart/form-data; boundary=--$boundary"
+
+    }
+    catch [System.Net.WebException] {
+        If ($_.Exception.Response.StatusCode.value__) {
+            $crap = ($_.Exception.Response.StatusCode.value__ ).ToString().Trim();
+            Write-Output $crap;
+        }
+        If  ($_.Exception.Message) {
+            $crapMessage = ($_.Exception.Message).ToString().Trim();
+            Write-Output $crapMessage;
+        }
+    }
+    
 
     Write-Host "result-----------"$result
   
