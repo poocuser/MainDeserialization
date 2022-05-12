@@ -231,6 +231,7 @@ runs:
         WorkspaceName: ${{ inputs.WorkspaceName }}
       shell: powershell
       run: |
+          $root_path = (Get-Location).Path
           $git_event_before = $env:GIT_EVENT_BEFORE
           $git_event_after = $env:GIT_EVENT_AFTER
           $pbix_files = @($(git diff --name-only $git_event_before $git_event_after --diff-filter=ACM "*.pbix"))
