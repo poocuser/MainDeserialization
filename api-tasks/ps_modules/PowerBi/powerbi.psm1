@@ -580,7 +580,7 @@ Function Publish-PowerBIFile {
         Write-Host  "file HEEERE!!: $file"
     
         $filePath = "$directory\$file"
-        $filePath = $foundFile
+        #$filePath = $foundFile
         Write-Host "Trying to publish PowerBI File: $FilePath"
     
         #Check for exisiting report
