@@ -234,10 +234,12 @@ runs:
       shell: powershell
       run: |
           $root_path = (Get-Location).Path
+          Write-Host $root_path;
           $git_event_before = $env:GIT_EVENT_BEFORE
           $git_event_after = $env:GIT_EVENT_AFTER
           $pbix_files = @($(git diff --name-only $git_event_before $git_event_after --diff-filter=ACM "*.pbix"))
           $pbix_files = $pbix_files | ForEach-Object { Join-Path $root_path $_ | Get-Item }
-          cd $GITHUB_ACTION_PATH
+          cd VAR_GITHUB_ACTION_PATH
+          ls
           Write-Warning "An error occurred:" $GITHUB_ACTION_PATH
           . api-tasks/run-task.ps1 -ClientId ${{ inputs.PBI_CLIENT_ID }} -Secret ${{ inputs.PBI_CLIENT_SECRET }} -TenantId ${{ inputs.PBI_TENANT_ID }} -FilePattern $pbix_files -WorkspaceName ${{ inputs.WorkspaceName }} -Action 'Publish' -Create $true -Overwrite $true
