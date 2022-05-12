@@ -246,4 +246,6 @@ runs:
           cd ${{ github.action_path }}
           ls
           Write-Host $pbix_files
-          ${{ github.action_path }}\api-tasks\run-task.ps1 -ClientId ${{ inputs.PBI_CLIENT_ID }} -Secret ${{ inputs.PBI_CLIENT_SECRET }} -TenantId ${{ inputs.PBI_TENANT_ID }} -FilePattern ${{ inputs.path }} -WorkspaceName ${{ inputs.WorkspaceName }} -Action 'Publish' -Create $true -Overwrite $true
+          $CustomFilePattern =  Join-Path $root_path ${{ inputs.path }}
+          Write-Host "CustomFilePattern---" $CustomFilePattern
+          ${{ github.action_path }}\api-tasks\run-task.ps1 -ClientId ${{ inputs.PBI_CLIENT_ID }} -Secret ${{ inputs.PBI_CLIENT_SECRET }} -TenantId ${{ inputs.PBI_TENANT_ID }} -FilePattern $CustomFilePattern -WorkspaceName ${{ inputs.WorkspaceName }} -Action 'Publish' -Create $true -Overwrite $true
