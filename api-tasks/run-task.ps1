@@ -92,7 +92,7 @@ elseif ($action -eq "Publish") {
     Write-Host "Publishing PowerBI FIle: $FilePattern, in workspace: $WorkspaceName with user: $Username"
     Publish-PowerBIFile -WorkspaceName $WorkspaceName -Create $Create -AccessToken $token -FilePattern $FilePattern -Overwrite $Overwrite
 }
-elseif ($Action -eq "DeleteWorkspace") {
+elseif ($Action -eq "DeleteWorkspace") { 
     Write-Host "Deleting a Workspace"
     Remove-PowerBIWorkSpace -WorkspaceName $WorkspaceName -AccessToken $token
 }

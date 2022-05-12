@@ -566,20 +566,20 @@ Function Publish-PowerBIFile {
 
     Write-Host  "filePattern HEEERE!!: $filePattern"
     
-    #$searchedFiles = Get-ChildItem $filePattern | Where {$_.extension -like ".pbix"}
+    $searchedFiles = Get-ChildItem $filePattern | Where {$_.extension -like ".pbix"}
 
-    $searchedFiles = $filePattern
+    #$searchedFiles = $filePattern
 
     Write-Host  "SEARCHEDFIELS HEEERE!!: $searchedFiles"
 
     foreach ($foundFile in $searchedFiles) {
-        #$directory = $foundFile.DirectoryName
-        #$file = $foundFile.Name
+        $directory = $foundFile.DirectoryName
+        $file = $foundFile.Name
 
         Write-Host  "directory HEEERE!!: $directory"
         Write-Host  "file HEEERE!!: $file"
     
-        #$filePath = "$directory\$file"
+        $filePath = "$directory\$file"
         $filePath = $foundFile
         Write-Host "Trying to publish PowerBI File: $FilePath"
     
