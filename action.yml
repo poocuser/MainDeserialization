@@ -229,6 +229,8 @@ runs:
         PBI_CLIENT_ID: ${{ inputs.PBI_CLIENT_ID }}
         PBI_CLIENT_SECRET: ${{ inputs.PBI_CLIENT_SECRET }}
         WorkspaceName: ${{ inputs.WorkspaceName }}
+        VAR_GITHUB_ACTION_PATH: ${{ github.action_path }}
+        VAR_GITHUB_WORKSPACE: ${{ github.workspace }}
       shell: powershell
       run: |
           $root_path = (Get-Location).Path
