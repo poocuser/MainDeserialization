@@ -455,26 +455,13 @@ Function Import-PowerBIFile {
 
     Write-Host "powerBiBodyTemplate-----------"$powerBiBodyTemplate
 
-    Try {
+
  
-    Invoke-API -Url $url -Method "Post" -AccessToken $AccessToken -Body $body -ContentType "multipart/form-data; boundary=--$boundary"
+    #$result = Invoke-API -Url $url -Method "Post" -AccessToken $AccessToken -Body $body -ContentType "multipart/form-data; boundary=--$boundary"
 
-    }
-    catch [Net.WebException] {
+    try { Invoke-RestMethod -Url $url -Method "Post" -AccessToken $AccessToken -Body $body -ContentType "multipart/form-data; boundary=--$boundary" }
+catch { ([System.IO.StreamReader]$_.Exception.Response.GetResponseStream()).ReadToEnd() } 
 
-        $ex=$_
-        
-        if  ($ex-ne$null) {
-        $resp=$ex.Exception.Response;
-        $rs=$resp.GetResponseStream();
-        [System.IO.StreamReader]$sr=New-Object System.IO.StreamReader($rs);
-        [string]$results=$sr.ReadToEnd();
-        
-        Write-Host "pchhhhhhh!!" $results
-        
-                    }
-        
-        }
     
 
     Write-Host "result-----------"$result
