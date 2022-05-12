@@ -201,10 +201,10 @@ runs:
               }
             }
 
-            Write-Information "Finished!"
+            Write-Information "Finished! 🥳"
       shell: pwsh
 
-    - name: Push BIM Files to Git repo
+    - name: Push TOM Files to Git repo
       run: |
           git config --global user.name '${{ github.actor }}'
           git config --global user.email '${{ github.actor }}@users.noreply.github.com'
@@ -212,7 +212,8 @@ runs:
           git pull
           git stash apply
           git add **/*.database.json
+          git add **/*.json
           git status --porcelain
-          git commit -am "Automated extracton of BIM file from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
+          git commit -am "Automated extracton of JSON files from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
           git push
       shell: pwsh
