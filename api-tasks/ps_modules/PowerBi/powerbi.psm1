@@ -441,15 +441,22 @@ Function Import-PowerBIFile {
     )
 
     $fileName = [IO.Path]::GetFileName($Path)
+    Write-Host "fileName--------"$fileName 
     $boundary = [guid]::NewGuid().ToString()
+    Write-Host "boundary-----------"$boundary 
     $fileBytes = [System.IO.File]::ReadAllBytes($Path)
+    Write-Host "fileBytes-----------"$fileBytes 
     $encoding = [System.Text.Encoding]::GetEncoding("iso-8859-1")
-    $encodedFileName = [System.Web.HttpUtility]::UrlEncode($fileName) 
+    $encodedFileName = [System.Web.HttpUtility]::UrlEncode($fileName)
+    Write-Host "encodedFileName-----------"$encodedFileName 
     $url = $powerbiUrl + "$GroupPath/imports?datasetDisplayName=$encodedFileName&nameConflict=$Conflict"
 
     $body = $powerBiBodyTemplate -f $boundary, $fileName, $encoding.GetString($fileBytes)
  
-    $result = Invoke-API -Url $url -Method "Post" -AccessToken $AccessToken -Body $body -ContentType "multipart/form-data; boundary=--$boundary" 
+    $result = Invoke-API -Url $url -Method "Post" -AccessToken $AccessToken -Body $body -ContentType "multipart/form-data; boundary=--$boundary"
+
+    Write-Host "result-----------"$result
+    Write-Host "powerBiBodyTemplate-----------"$powerBiBodyTemplate
 
     $reportId = $result.Id
     Write-Host "##vso[task.setvariable variable=PowerBIActions.ReportId]$reportId"
