@@ -449,7 +449,8 @@ Function Import-PowerBIFile {
     $encoding = [System.Text.Encoding]::GetEncoding("iso-8859-1")
     $encodedFileName = [System.Web.HttpUtility]::UrlEncode($fileName)
     Write-Host "encodedFileName-----------"$encodedFileName 
-    $url = $powerbiUrl + "$GroupPath/imports?datasetDisplayName=$encodedFileName&nameConflict=$Conflict"
+    $url = $powerbiUrl + "$GroupPath/imports?datasetDisplayName=$encodedFileName"
+    #&nameConflict=$Conflict
 
     $body = $powerBiBodyTemplate -f $boundary, $fileName, $encoding.GetString($fileBytes)
  
