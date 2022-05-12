@@ -241,5 +241,4 @@ runs:
           $pbix_files = $pbix_files | ForEach-Object { Join-Path $root_path $_ | Get-Item }
           cd ${{ github.action_path }}
           ls
-          Write-Warning "An error occurred:" $GITHUB_ACTION_PATH
-          . api-tasks/run-task.ps1 -ClientId ${{ inputs.PBI_CLIENT_ID }} -Secret ${{ inputs.PBI_CLIENT_SECRET }} -TenantId ${{ inputs.PBI_TENANT_ID }} -FilePattern $pbix_files -WorkspaceName ${{ inputs.WorkspaceName }} -Action 'Publish' -Create $true -Overwrite $true
+          .api-tasks\run-task.ps1 -ClientId ${{ inputs.PBI_CLIENT_ID }} -Secret ${{ inputs.PBI_CLIENT_SECRET }} -TenantId ${{ inputs.PBI_TENANT_ID }} -FilePattern $pbix_files -WorkspaceName ${{ inputs.WorkspaceName }} -Action 'Publish' -Create $true -Overwrite $true
