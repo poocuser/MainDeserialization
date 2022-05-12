@@ -56,9 +56,7 @@ runs:
         #PBI_USER_PASSWORD: ${{ secrets.PBI_USER_PASSWORD }}
       run: |
             Write-Information "Fucking START HERE!!!!!"
-            # halt on first error
             $ErrorActionPreference = "Stop"
-            # print Information stream
             $InformationPreference = "Continue"
 
             $root_path = (Get-Location).Path
@@ -112,20 +110,20 @@ runs:
             Write-Information "Triggered By: $triggered_by"
             Write-Information "Getting changed .pbix files ..."
             if ($triggered_by -like "*CI" -or $triggered_by -eq "push") {
-              # get the changed .pbix files in the current push
+
               Write-Information "git diff --name-only $git_event_before $git_event_after --diff-filter=ACM ""*.pbix"""
               $pbix_files = @($(git diff --name-only $git_event_before $git_event_after --diff-filter=ACM "*.pbix"))
               $pbix_files = $pbix_files | ForEach-Object { Join-Path $root_path $_ | Get-Item }
 
               if ($pbix_files.Count -eq 0) {
-                Write-Warning "Something went wrong! Could not find any changed .pbix files using the above 'git diff' command!"
-                Write-Information "Getting all .pbix files in the repo to be sure to get all changes!"
-                # get all .pbix files in the current repository
+                Write-Warning "Something went wrong! Could not find any changed .pbix files using the above 'git diff' command! XD"
+                Write-Information "Getting all .pbix files in the repo to be sure to get all changes!!!"
+
                 $pbix_files = Get-ChildItem -Path (Join-Path $root_path $manual_trigger_path_filter) -Recurse -Filter "*.pbix" -File
               }
             }
             elseif ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
-              # get all .pbix files in the current repository
+
               $pbix_files = Get-ChildItem -Path (Join-Path $root_path $manual_trigger_path_filter) -Recurse -Filter "*.pbix" -File
             }
             else {
@@ -179,7 +177,7 @@ runs:
 
                 Write-Information "$indention Created initial BIM-file ($output_path)`n$indention Overwriting <name> and <id> properties now ..."
 
-                # need to overwrite id and name as they are taken from the temporary dataset
+
                 $bim_json = Get-Content $output_path | ConvertFrom-Json
                 $bim_json.name = $pbix_file.BaseName
                 $bim_json.id = $pbix_file.BaseName
