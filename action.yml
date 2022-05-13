@@ -228,8 +228,9 @@ runs:
           #$CustomFilePattern =  Join-Path $root_path $DEV_FOLDER
           #Write-Host "CustomFilePattern---" $CustomFilePattern
           #Write-Host "ACTION PATH---" ${{ github.action_path }}\GitHub\run-task.ps1
-          . GitHub/run-task.ps1 -ClientId $env:PBI_CLIENT_ID -Secret $env:PBI_CLIENT_SECRET -TenantId $env:inputs.PBI_TENANT_ID -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -Action 'Publish' -Create $true -Overwrite $true
-          . GitHub/run-task.ps1 -ClientId $env:PBI_CLIENT_ID -Secret $env:PBI_CLIENT_SECRET -TenantId $env:inputs.PBI_TENANT_ID -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -UserString $env:USER_EMAIL -Action 'AddUsers' -AccessRight "Admin" -Create $true
+          #Write-Host "GITHUB_WORKSPACE PATH---" $GITHUB_WORKSPACE
+          $GITHUB_WORKSPACE\GitHub\run-task.ps1 -ClientId $env:PBI_CLIENT_ID -Secret $env:PBI_CLIENT_SECRET -TenantId $env:inputs.PBI_TENANT_ID -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -Action 'Publish' -Create $true -Overwrite $true
+          $GITHUB_WORKSPACE\GitHub\run-task.ps1 -ClientId $env:PBI_CLIENT_ID -Secret $env:PBI_CLIENT_SECRET -TenantId $env:inputs.PBI_TENANT_ID -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -UserString $env:USER_EMAIL -Action 'AddUsers' -AccessRight "Admin" -Create $true
     - name: Push JSON Files to Git repo
       run: |
           git config --global user.name '${{ github.actor }}'
