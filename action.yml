@@ -15,10 +15,10 @@ inputs:
   composite-path:
     description: 'Composire directory path'
     required: true
-  WorkspaceName:
+  DEV_WORKSPACE:
     description: 'Workspace to Publish the PBIX'
     required: true
-  path:
+  DEV_FOLDER:
     description: 'dd'
     required: false
     default: "./Reports"
