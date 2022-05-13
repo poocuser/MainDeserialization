@@ -233,8 +233,8 @@ runs:
           ls
           cd ${{ github.action_path }}
           ls
-          D:\a\_actions\poocuser\MainDeserialization\main\GitHub\run-task.ps1 -ClientId "a6b79634-8f18-471e-81e8-cb9b60f87942" -Secret "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J" -TenantId "1234b804-8fd3-488c-868a-6a81443bd23d" -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -Action 'Publish' -Create $true -Overwrite $true
-          D:\a\_actions\poocuser\MainDeserialization\main\GitHub\run-task.ps1 -ClientId "a6b79634-8f18-471e-81e8-cb9b60f87942" -Secret "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J" -TenantId "1234b804-8fd3-488c-868a-6a81443bd23d" -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -UserString $env:USER_EMAIL -Action 'AddUsers' -AccessRight "Admin" -Create $true
+          . GitHub/run-task.ps1 -ClientId "a6b79634-8f18-471e-81e8-cb9b60f87942" -Secret "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J" -TenantId "1234b804-8fd3-488c-868a-6a81443bd23d" -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -Action 'Publish' -Create $true -Overwrite $true
+          . GitHub/run-task.ps1 -ClientId "a6b79634-8f18-471e-81e8-cb9b60f87942" -Secret "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J" -TenantId "1234b804-8fd3-488c-868a-6a81443bd23d" -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -UserString $env:USER_EMAIL -Action 'AddUsers' -AccessRight "Admin" -Create $true
     - name: Push JSON Files to Git repo
       run: |
           git config --global user.name '${{ github.actor }}'
