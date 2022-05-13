@@ -268,6 +268,11 @@ runs:
 
 
     - name: Call the PS script and publish PBI contents
+      env:
+       PBI_PREMIUM_WORKSPACE_ID: ${{ inputs.PBI_PREMIUM_WORKSPACE_ID }}
+       PBI_TENANT_ID: ${{ inputs.PBI_TENANT_ID }}
+       PBI_CLIENT_ID: ${{ inputs.PBI_CLIENT_ID }}
+       PBI_CLIENT_SECRET: ${{ inputs.PBI_CLIENT_SECRET }}
       shell: pwsh
       run: |
         Set-PSRepository PSGallery -InstallationPolicy Trusted
