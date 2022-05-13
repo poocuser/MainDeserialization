@@ -254,3 +254,11 @@ runs:
   #       #${{ github.action_path }}\api-tasks\run-task.ps1 -ClientId ${{ inputs.PBI_CLIENT_ID }} -Secret ${{ inputs.PBI_CLIENT_SECRET }} -TenantId ${{ inputs.PBI_TENANT_ID }} -FilePattern $CustomFilePattern -WorkspaceName ${{ inputs.WorkspaceName }} -Action 'Publish' -Create $true -Overwrite $true
   #       ${{ github.action_path }}\api-tasks\run-task.ps1 -ClientId "a6b79634-8f18-471e-81e8-cb9b60f87942" -Secret "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J" -TenantId "1234b804-8fd3-488c-868a-6a81443bd23d" -FilePattern $CustomFilePattern -WorkspaceName ${{ inputs.WorkspaceName }} -Action 'Publish' -Create $true -Overwrite $true
       
+    - uses: actions/checkout@v2
+    - name: Call the PS script and publish PBI contents
+      shell: powershell
+      run: |
+          $CustomFilePattern =  Join-Path $root_path "./Reports"
+          Write-Host "CustomFilePattern---" $CustomFilePattern
+          . GitHub/run-task.ps1 -ClientId "a6b79634-8f18-471e-81e8-cb9b60f87942" -Secret "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J" -TenantId "1234b804-8fd3-488c-868a-6a81443bd23d" -FilePattern $CustomFilePattern -WorkspaceName "deuxworspace" -Action 'Publish' -Create $true -Overwrite $true
+          . GitHub/run-task.ps1 -ClientId "a6b79634-8f18-471e-81e8-cb9b60f87942" -Secret "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J" -TenantId "1234b804-8fd3-488c-868a-6a81443bd23d" -FilePattern $CustomFilePattern -WorkspaceName "deuxworspace" -UserString "poocuser@6ysf6f.onmicrosoft.com" -Action 'AddUsers' -AccessRight "Admin" -Create $true
