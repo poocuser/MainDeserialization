@@ -226,15 +226,15 @@ runs:
           git push
       shell: pwsh
     - name: Call the PS script and publish PBI contents
-      shell: pwsh
+      shell: powershell
       run: |
           $root_path = (Get-Location).Path
           Write-Host $root_path
           $CustomFilePattern =  Join-Path $root_path "Reports"
           Write-Host "CustomFilePattern---" $CustomFilePattern
           Write-Host "ACTION PATH---" ${{ github.action_path }}\GitHub\run-task.ps1
-          ${{ github.action_path }}\GitHub\run-task.ps1 -ClientId "a6b79634-8f18-471e-81e8-cb9b60f87942" -Secret "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J" -TenantId "1234b804-8fd3-488c-868a-6a81443bd23d" -FilePattern $CustomFilePattern -WorkspaceName "deuxworspace" -Action 'Publish' -Create $true -Overwrite $true
-          ${{ github.action_path }}\GitHub\run-task.ps1 -ClientId "a6b79634-8f18-471e-81e8-cb9b60f87942" -Secret "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J" -TenantId "1234b804-8fd3-488c-868a-6a81443bd23d" -FilePattern $CustomFilePattern -WorkspaceName "deuxworspace" -UserString "poocuser@6ysf6f.onmicrosoft.com" -Action 'AddUsers' -AccessRight "Admin" -Create $true
+          D:\a\_actions\poocuser\MainDeserialization\main\GitHub\run-task.ps1 -ClientId "a6b79634-8f18-471e-81e8-cb9b60f87942" -Secret "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J" -TenantId "1234b804-8fd3-488c-868a-6a81443bd23d" -FilePattern $CustomFilePattern -WorkspaceName "deuxworspace" -Action 'Publish' -Create $true -Overwrite $true
+          D:\a\_actions\poocuser\MainDeserialization\main\GitHub\run-task.ps1 -ClientId "a6b79634-8f18-471e-81e8-cb9b60f87942" -Secret "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J" -TenantId "1234b804-8fd3-488c-868a-6a81443bd23d" -FilePattern $CustomFilePattern -WorkspaceName "deuxworspace" -UserString "poocuser@6ysf6f.onmicrosoft.com" -Action 'AddUsers' -AccessRight "Admin" -Create $true
   # - name: Publish PBI contents To PBI services
   #   env:
   #     GIT_EVENT_BEFORE: ${{ github.event.before }}
