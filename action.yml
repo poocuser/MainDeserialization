@@ -212,19 +212,6 @@ runs:
 
             Write-Information "Finished! 🥳"
       shell: pwsh
-    - name: Push JSON Files to Git repo
-      run: |
-          git config --global user.name '${{ github.actor }}'
-          git config --global user.email '${{ github.actor }}@users.noreply.github.com'
-          git stash
-          git pull
-          git stash apply
-          git add **/*.database.json
-          git add **/*.json
-          git status --porcelain
-          git commit -am "Automated extracton of JSON files from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
-          git push
-      shell: pwsh
     - uses: actions/checkout@v2
     - name: Call the PS script and publish PBI contents
       env:
@@ -243,6 +230,19 @@ runs:
           #Write-Host "ACTION PATH---" ${{ github.action_path }}\GitHub\run-task.ps1
           . GitHub/run-task.ps1 -ClientId $env:PBI_CLIENT_ID -Secret $env:PBI_CLIENT_SECRET -TenantId $env:inputs.PBI_TENANT_ID -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -Action 'Publish' -Create $true -Overwrite $true
           . GitHub/run-task.ps1 -ClientId $env:PBI_CLIENT_ID -Secret $env:PBI_CLIENT_SECRET -TenantId $env:inputs.PBI_TENANT_ID -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -UserString $env:USER_EMAIL -Action 'AddUsers' -AccessRight "Admin" -Create $true
+    - name: Push JSON Files to Git repo
+      run: |
+          git config --global user.name '${{ github.actor }}'
+          git config --global user.email '${{ github.actor }}@users.noreply.github.com'
+          git stash
+          git pull
+          git stash apply
+          git add **/*.database.json
+          git add **/*.json
+          git status --porcelain
+          git commit -am "Automated extracton of JSON files from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
+          git push
+      shell: pwsh
   # - name: Publish PBI contents To PBI services
   #   env:
   #     GIT_EVENT_BEFORE: ${{ github.event.before }}
