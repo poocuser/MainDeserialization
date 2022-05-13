@@ -126,9 +126,12 @@ Function Invoke-API {
     }
     catch [System.Net.WebException] {
         $ex = $_.Exception
+        if($ex){
+            Write-Host $ex.ErrorDetails.Message
+        }
         try {
             if ($null -ne $ex.Response) {
-                Write-Error $ex.ErrorDetails.Message
+                
                 $streamReader = [System.IO.StreamReader]::new($_.Exception.Response.GetResponseStream())
                 $errorContent = $streamReader.ReadToEnd() | ConvertFrom-Json
                 
