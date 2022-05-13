@@ -291,4 +291,12 @@ runs:
 
           Connect-PowerBIServiceAccount -Credential $credential -ServicePrincipal -TenantId $tenant_id
         }
-        New-PowerBIWorkspace -Name "New Workspace"
+        # Create a new workspace, current user is admin
+        New-PowerBIWorkspace -Name "Scott Adams - Comic Strips"
+        
+        # Grab pointer to object
+        $workspace1 = Get-PowerBIWorkspace -Scope Organization -Filter "name eq 'Scott Adams - Comic Strips'"
+        $workspace1
+        
+        # Add Dilbert as a contributor 
+        Add-PowerBIWorkspaceUser -Scope Organization -Id $workspace1.Id -UserEmailAddress poocuser@6ysf6f.onmicrosoft.com -AccessRight Admin
