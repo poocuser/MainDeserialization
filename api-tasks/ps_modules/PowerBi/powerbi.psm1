@@ -126,9 +126,6 @@ Function Invoke-API {
     }
     catch [System.Net.WebException] {
         $ex = $_.Exception
-        if($ex){
-            Write-Host $ex.ErrorDetails.Message
-        }
         try {
             if ($null -ne $ex.Response) {
                 
