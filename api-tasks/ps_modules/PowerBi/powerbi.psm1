@@ -128,6 +128,7 @@ Function Invoke-API {
         $ex = $_.Exception
         try {
             if ($null -ne $ex.Response) {
+                Write-Error $ex.ErrorDetails.Message
                 $streamReader = [System.IO.StreamReader]::new($_.Exception.Response.GetResponseStream())
                 $errorContent = $streamReader.ReadToEnd() | ConvertFrom-Json
                 
