@@ -219,7 +219,7 @@ runs:
         PBI_CLIENT_ID: ${{ inputs.PBI_CLIENT_ID }}
         PBI_CLIENT_SECRET: ${{ inputs.PBI_CLIENT_SECRET }}
         DEV_WORKSPACE: ${{ inputs.DEV_WORKSPACE }}
-        DEV_FOLDER: ${{ inputs.DEV_FOLDER }}
+        DEV_FOLDER: ${{ github.workspace }}\${{ inputs.DEV_FOLDER }}
         USER_EMAIL: ${{ inputs.USER_EMAIL }}
       shell: powershell
       run: |
