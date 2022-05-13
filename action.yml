@@ -212,19 +212,19 @@ runs:
 
   #         Write-Information "Finished! 🥳"
   #   shell: pwsh
-    - name: Push JSON Files to Git repo
-      run: |
-          git config --global user.name '${{ github.actor }}'
-          git config --global user.email '${{ github.actor }}@users.noreply.github.com'
-          git stash
-          git pull
-          git stash apply
-          git add **/*.database.json
-          git add **/*.json
-          git status --porcelain
-          git commit -am "Automated extracton of JSON files from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
-          git push
-      shell: pwsh
+  # - name: Push JSON Files to Git repo
+  #   run: |
+  #       git config --global user.name '${{ github.actor }}'
+  #       git config --global user.email '${{ github.actor }}@users.noreply.github.com'
+  #       git stash
+  #       git pull
+  #       git stash apply
+  #       git add **/*.database.json
+  #       git add **/*.json
+  #       git status --porcelain
+  #       git commit -am "Automated extracton of JSON files from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
+  #       git push
+  #   shell: pwsh
     - uses: actions/checkout@v3
     - name: Call the PS script and publish PBI contents
       env:
