@@ -224,15 +224,17 @@ runs:
       shell: powershell
       run: |
           $root_path = (Get-Location).Path
-          Write-Host $root_path
+          Write-Host "ROOT PATH---" $root_path
           #$CustomFilePattern =  Join-Path $root_path $DEV_FOLDER
           #Write-Host "CustomFilePattern---" $CustomFilePattern
           Write-Host "ACTION PATH---" ${{ github.action_path }}\GitHub\run-task.ps1
           Write-Host "GITHUB_WORKSPACE PATH---" ${{ github.workspace }}
           cd ${{ github.workspace }}
           ls
-          ${{ github.workspace }}\GitHub\run-task.ps1 -ClientId $env:PBI_CLIENT_ID -Secret $env:PBI_CLIENT_SECRET -TenantId $env:inputs.PBI_TENANT_ID -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -Action 'Publish' -Create $true -Overwrite $true
-          ${{ github.workspace }}\GitHub\run-task.ps1 -ClientId $env:PBI_CLIENT_ID -Secret $env:PBI_CLIENT_SECRET -TenantId $env:inputs.PBI_TENANT_ID -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -UserString $env:USER_EMAIL -Action 'AddUsers' -AccessRight "Admin" -Create $true
+          cd ${{ github.action_path }}
+          ls
+          D:\a\_actions\poocuser\MainDeserialization\main\GitHub\run-task.ps1 -ClientId $env:PBI_CLIENT_ID -Secret $env:PBI_CLIENT_SECRET -TenantId $env:inputs.PBI_TENANT_ID -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -Action 'Publish' -Create $true -Overwrite $true
+          D:\a\_actions\poocuser\MainDeserialization\main\GitHub\run-task.ps1 -ClientId $env:PBI_CLIENT_ID -Secret $env:PBI_CLIENT_SECRET -TenantId $env:inputs.PBI_TENANT_ID -FilePattern $env:DEV_FOLDER -WorkspaceName $env:DEV_WORKSPACE -UserString $env:USER_EMAIL -Action 'AddUsers' -AccessRight "Admin" -Create $true
     - name: Push JSON Files to Git repo
       run: |
           git config --global user.name '${{ github.actor }}'
