@@ -321,7 +321,7 @@ runs:
              $report = $null
              $dataset = $null
 
-               Write-Information "Processing  $($pbix_file.FullName) ... "
+               Write-Information "Processing...  $($pbix_file.FullName) ... "
 
                $temp_name = "$($pbix_file.BaseName)-$(Get-Date -Format 'yyyyMMddTHHmmss')"
                Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)/$temp_name ... "
