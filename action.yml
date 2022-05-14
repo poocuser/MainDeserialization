@@ -279,4 +279,4 @@ runs:
        PBI_CLIENT_SECRET: ${{ inputs.PBI_CLIENT_SECRET }}
       shell: pwsh
       run: |
-          ${{ github.action_path }}/scripts/run.ps1
+          ${{ github.action_path }}/scripts/run.ps1 -Action 'CI-Build' -WorkspaceName "Dev-CI" 
