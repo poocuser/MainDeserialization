@@ -55,7 +55,7 @@ if ($triggered_by -like "*CI" -or $triggered_by -eq "push") {
 
 Function CI-Build {
     Param(
-        [parameter(Mandatory = $true)]$WorkspaceName,
+        [parameter(Mandatory = $true)]$WorkspaceName
     )
     #Get WorkSpace
     $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $WorkspaceName }
