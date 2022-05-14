@@ -2,7 +2,7 @@
 Param(
     [Parameter(Mandatory = $false)][String]$WorkspaceName,
     [Parameter(Mandatory = $false)][String]$Action,
-    [Parameter(Mandatory = $false)][String]$UserEmail
+    [Parameter(Mandatory = $false)][String]$UserString
 )
 
 $ErrorActionPreference = "Stop"
