@@ -279,7 +279,7 @@ runs:
        PBI_CLIENT_SECRET: ${{ inputs.PBI_CLIENT_SECRET }}
       shell: pwsh
       run: |
-          . scripts/run.ps1 
+          ./scripts/run.ps1
       #   $ErrorActionPreference = "Stop"
       #    $InformationPreference = "Continue"
 
