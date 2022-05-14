@@ -237,7 +237,7 @@ Function Update-PowerBIDatasetDatasources {
             else {
                 Write-Warning "Dataset $DatasetName could not be found"
             }
-        }
+        } 
     }
     else {
         Write-Error "Workspace: $WorkspaceName could not be found"

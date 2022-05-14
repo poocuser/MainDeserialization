@@ -68,7 +68,7 @@ Write-Debug "ClientSecret          : $(if (![System.String]::IsNullOrWhiteSpace(
 Write-Debug "TenantId              : $(if (![System.String]::IsNullOrWhiteSpace($TenantId)) { '***'; } else { '<not present>'; })";
 Write-Debug "Service Principals    : $($ServicePrincipalString)";
 Write-Debug "ConnectionString      : $(if (![System.String]::IsNullOrWhiteSpace($ConnectionString)) { '***'; } else { '<not present>'; })";
-
+ 
 #AADToken
 $ResourceUrl = "https://analysis.windows.net/powerbi/api"
 #Write-Host "Getting AAD Token for user: $UserName"
