@@ -1,11 +1,4 @@
-[CmdletBinding()]
-Param(
-    [Parameter(Mandatory = $false)][String]$Username,
-    [Parameter(Mandatory = $false)][String]$Username,
-    [Parameter(Mandatory = $false)][String]$Username,
-    [Parameter(Mandatory = $false)][String]$Username,
 
-)
 
 $ErrorActionPreference = "Stop"
 $InformationPreference = "Continue"
