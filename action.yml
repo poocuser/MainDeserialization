@@ -281,4 +281,4 @@ runs:
        USER_EMAIL: ${{ inputs.USER_EMAIL }}
       shell: pwsh
       run: |
-          ${{ github.action_path }}/scripts/run.ps1 -Action 'CI-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -WorkspaceName $env:DEV_WORKSPACE -UserString $env:USER_EMAIL
+          ${{ github.action_path }}/scripts/run.ps1 -Action 'CI-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -WorkspaceName $env:DEV_WORKSPACE -UserEmail $env:USER_EMAIL

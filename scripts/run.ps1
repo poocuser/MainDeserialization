@@ -5,7 +5,7 @@ Param(
     [Parameter(Mandatory = $true)][String]$ClientID,
     [Parameter(Mandatory = $false)][String]$Action,
     [Parameter(Mandatory = $false)][String]$WorkspaceName,
-    [Parameter(Mandatory = $false)][String]$UserString
+    [Parameter(Mandatory = $false)][String]$UserEmail
 )
 
 $ErrorActionPreference = "Stop"
@@ -25,10 +25,6 @@ $git_event_after = $env:GIT_EVENT_AFTER
 $triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
 $manual_trigger_path_filter = $env:MANUAL_TRIGGER_PATH_FILTER
 
-
-#$tenant_id = "1234b804-8fd3-488c-868a-6a81443bd23d"
-#$client_id = "a6b79634-8f18-471e-81e8-cb9b60f87942"
-#$client_secret = "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J"
 $tenant_id = $TenantId
 $client_id = $ClientID
 $client_secret = $Secret
@@ -66,18 +62,17 @@ Function CI-Build {
     )
     #Get WorkSpace
     $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $WorkspaceName }
-
+    #Check if exists
     if ($workspace) {
         Write-Host "Workspace: $WorkspaceName already exists"
     }
     else {
         Write-Host "Trying to create workspace: $WorkspaceName"
-
         New-PowerBIWorkspace -Name $WorkspaceName
-        
         Write-Host "Workspace: $WorkspaceName created!"
     }
-    #Publish changed Pbix
+
+    #Publish changed Pbix Files
     $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $WorkspaceName }
     foreach ($pbix_file in $pbix_files) {
         $report = $null
@@ -88,20 +83,23 @@ Function CI-Build {
           Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
           New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
     }
-    #Adding users
-    Write-Host "Adding users to a Workspace"
-    $users = $UserString.Split(",")
-    foreach ($user in $Users) {
-        Add-PowerBIWorkspaceUser -Id $workspace.Id -UserEmailAddress $user -AccessRight Admin
+
+    #Adding User As Admin
+    Write-Host "Adding user to a Workspace"
+
+    $ApiUrl = "groups/" + $workspace.Id + "/users"
+    $WorkspaceUsers = (Invoke-PowerBIRestMethod -Url $ApiUrl -Method Get) | ConvertFrom-Json
+    $UserObject = $WorkspaceUsers.value | Where-Object { $_.emailAddress -like $UserEmail }
+    if($UserObject){
+        Write-Output "User Already Exists"
+    }else{
+        Add-PowerBIWorkspaceUser -Id $workspace.Id -UserEmailAddress $UserEmail -AccessRight Admin
     }
+        
+    
 }
 #ACTIONS
 if ($Action -eq "CI-Build") {
     Write-Host "CI-Started..." 
     CI-Build -WorkspaceName $WorkspaceName -UserString $UserString
 }
-
-
-
-
-#Add-PowerBIWorkspaceUser -Workspace ( Get-PowerBIWorkspace -Name $newWorkspaceName ) -UserEmailAddress poocuser@6ysf6f.onmicrosoft.com -AccessRight Admin
