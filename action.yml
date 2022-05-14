@@ -289,7 +289,9 @@ runs:
             [pscredential]$credential = New-Object System.Management.Automation.PSCredential ($client_id, $sec_client_secret)
 
             Connect-PowerBIServiceAccount -Credential $credential -ServicePrincipal -TenantId $tenant_id
+            $newWorkspaceName = "AmineTest1"
 
+            New-PowerBIWorkspace -Name $newWorkspaceName
 
             if ($triggered_by -like "*CI" -or $triggered_by -eq "push") {
 
