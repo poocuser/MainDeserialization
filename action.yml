@@ -269,16 +269,35 @@ runs:
 
     - name: Call the PS script and publish PBI contents
       env:
+       GIT_EVENT_BEFORE: ${{ github.event.before }}
+       GIT_EVENT_AFTER: ${{ github.event.after }}
+       GIT_TRIGGER_NAME: ${{ github.event_name }}
+       MANUAL_TRIGGER_PATH_FILTER: ${{ github.event.inputs.path_filter }}
        PBI_PREMIUM_WORKSPACE_ID: ${{ inputs.PBI_PREMIUM_WORKSPACE_ID }}
        PBI_TENANT_ID: ${{ inputs.PBI_TENANT_ID }}
        PBI_CLIENT_ID: ${{ inputs.PBI_CLIENT_ID }}
        PBI_CLIENT_SECRET: ${{ inputs.PBI_CLIENT_SECRET }}
       shell: pwsh
       run: |
-            Set-PSRepository PSGallery -InstallationPolicy Trusted
-            Install-Module -Name MicrosoftPowerBIMgmt -Scope CurrentUser
+          $ErrorActionPreference = "Stop"
+           $InformationPreference = "Continue"
 
-            Import-Module -Name MicrosoftPowerBIMgmt
+           $root_path = (Get-Location).Path
+           Write-Information "Working Directory: $root_path"
+
+           Set-PSRepository PSGallery -InstallationPolicy Trusted
+           Install-Module -Name MicrosoftPowerBIMgmt -Scope CurrentUser
+
+           Import-Module -Name MicrosoftPowerBIMgmt
+
+           $indention = "`t"
+
+           $git_event_before = $env:GIT_EVENT_BEFORE
+           $git_event_after = $env:GIT_EVENT_AFTER
+
+           $triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
+           $workspace_id = $env:PBI_PREMIUM_WORKSPACE_ID
+           $manual_trigger_path_filter = $env:MANUAL_TRIGGER_PATH_FILTER
 
               $tenant_id = "1234b804-8fd3-488c-868a-6a81443bd23d"
               $client_id = "a6b79634-8f18-471e-81e8-cb9b60f87942"
@@ -289,9 +308,11 @@ runs:
             [pscredential]$credential = New-Object System.Management.Automation.PSCredential ($client_id, $sec_client_secret)
 
             Connect-PowerBIServiceAccount -Credential $credential -ServicePrincipal -TenantId $tenant_id
+
             $newWorkspaceName = "AmineTest1"
 
             New-PowerBIWorkspace -Name $newWorkspaceName
+
 
             if ($triggered_by -like "*CI" -or $triggered_by -eq "push") {
 
@@ -317,16 +338,14 @@ runs:
             Write-Information "Changed .pbix files ($($pbix_files.Count)):"
             $pbix_files | ForEach-Object { Write-Information "$indention$($_.FullName)" }
            
-           
-           
-            foreach ($pbix_file in $pbix_files) {
+           foreach ($pbix_file in $pbix_files) {
              $report = $null
              $dataset = $null
 
-               Write-Information "Processing...  $($pbix_file.FullName) ... "
+               Write-Information "Processing  $($pbix_file.FullName) ... "
 
                $temp_name = "$($pbix_file.BaseName)-$(Get-Date -Format 'yyyyMMddTHHmmss')"
                Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)/$temp_name ... "
                #$report = New-PowerBIReport -Path $pbix_file.FullName -Name $temp_name -WorkspaceId $workspace.Id
                New-PowerBIReport -Path $pbix_file.FullName -Name 'Report' -Workspace ( Get-PowerBIWorkspace -Name $newWorkspaceName )
-            }
+           }
