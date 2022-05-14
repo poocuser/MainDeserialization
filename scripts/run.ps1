@@ -91,7 +91,7 @@ Function CI-Build {
 }
 #ACTIONS
 if ($Action -eq "CI-Build") {
-    Write-Host "CI-Started"
+    Write-Host "CI-Started..." 
     CI-Build -WorkspaceName $WorkspaceName -UserString $UserString
 }
 
