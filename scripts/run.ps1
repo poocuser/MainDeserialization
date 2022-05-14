@@ -79,7 +79,7 @@ Function CI-Build {
       
           #$temp_name = "$($pbix_file.BaseName)-$(Get-Date -Format 'yyyyMMddTHHmmss')"
           Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
-          New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -Workspace -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
+          New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
       }
 }
 
