@@ -55,7 +55,8 @@ if ($triggered_by -like "*CI" -or $triggered_by -eq "push") {
 
 Function CI-Build {
     Param(
-        [parameter(Mandatory = $true)]$WorkspaceName
+        [parameter(Mandatory = $true)]$WorkspaceName,
+        [parameter(Mandatory = $true)]$UserString
     )
     #Get WorkSpace
     $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $WorkspaceName }
@@ -70,6 +71,7 @@ Function CI-Build {
         
         Write-Host "Workspace: $WorkspaceName created!"
     }
+    #Publish changed Pbix
     $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $WorkspaceName }
     foreach ($pbix_file in $pbix_files) {
         $report = $null
@@ -77,15 +79,20 @@ Function CI-Build {
       
           Write-Information "Processing  $($pbix_file.FullName) ... "
       
-          #$temp_name = "$($pbix_file.BaseName)-$(Get-Date -Format 'yyyyMMddTHHmmss')"
           Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
           New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
-      }
+    }
+    #Adding users
+    Write-Host "Adding users to a Workspace"
+    $users = $UserString.Split(",")
+    foreach ($user in $Users) {
+        Add-PowerBIWorkspaceUser -Id $workspace.Id -UserEmailAddress $user -AccessRight Admin
+    }
 }
-
+#ACTIONS
 if ($Action -eq "CI-Build") {
     Write-Host "CI-Started"
-    CI-Build -WorkspaceName $WorkspaceName
+    CI-Build -WorkspaceName $WorkspaceName -UserString $UserString
 }
 
 
