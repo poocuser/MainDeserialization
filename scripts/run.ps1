@@ -58,7 +58,7 @@ if ($triggered_by -like "*CI" -or $triggered_by -eq "push") {
 Function CI-Build {
     Param(
         [parameter(Mandatory = $true)]$WorkspaceName,
-        [parameter(Mandatory = $true)]$UserString
+        [parameter(Mandatory = $true)]$UserEmail
     )
     #Get WorkSpace
     $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $WorkspaceName }
@@ -101,5 +101,5 @@ Function CI-Build {
 #ACTIONS
 if ($Action -eq "CI-Build") {
     Write-Host "CI-Started..." 
-    CI-Build -WorkspaceName $WorkspaceName -UserString $UserString
+    CI-Build -WorkspaceName $WorkspaceName -UserEmail $UserEmail
 }
