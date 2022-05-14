@@ -1,7 +1,10 @@
 [CmdletBinding()]
 Param(
-    [Parameter(Mandatory = $false)][String]$WorkspaceName,
+    [Parameter(Mandatory = $false)][String]$Secret,
+    [Parameter(Mandatory = $false)][String]$TenantId,
+    [Parameter(Mandatory = $true)][String]$ClientID,
     [Parameter(Mandatory = $false)][String]$Action,
+    [Parameter(Mandatory = $false)][String]$WorkspaceName,
     [Parameter(Mandatory = $false)][String]$UserString
 )
 
@@ -23,10 +26,13 @@ $triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
 $manual_trigger_path_filter = $env:MANUAL_TRIGGER_PATH_FILTER
 
 
-   $tenant_id = "1234b804-8fd3-488c-868a-6a81443bd23d"
-   $client_id = "a6b79634-8f18-471e-81e8-cb9b60f87942"
-   $client_secret = "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J"
-   #$login_info = "User ID=app:$client_id@$tenant_id;Password=$client_secret"
+#$tenant_id = "1234b804-8fd3-488c-868a-6a81443bd23d"
+#$client_id = "a6b79634-8f18-471e-81e8-cb9b60f87942"
+#$client_secret = "pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J"
+$tenant_id = $TenantId
+$client_id = $ClientID
+$client_secret = $Secret
+#$login_info = "User ID=app:$client_id@$tenant_id;Password=$client_secret"
 
 [securestring]$sec_client_secret = ConvertTo-SecureString $client_secret -AsPlainText -Force
 [pscredential]$credential = New-Object System.Management.Automation.PSCredential ($client_id, $sec_client_secret)
