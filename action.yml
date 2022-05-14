@@ -277,8 +277,8 @@ runs:
        PBI_TENANT_ID: ${{ inputs.PBI_TENANT_ID }}
        PBI_CLIENT_ID: ${{ inputs.PBI_CLIENT_ID }}
        PBI_CLIENT_SECRET: ${{ inputs.PBI_CLIENT_SECRET }}
-       DEV_WORKSPACE: ${{ inputs.PBI_CLIENT_SECRET }}
-       USER_EMAIL: ${{ inputs.PBI_CLIENT_SECRET }}
+       DEV_WORKSPACE: ${{ inputs.DEV_WORKSPACE }}
+       USER_EMAIL: ${{ inputs.USER_EMAIL }}
       shell: pwsh
       run: |
           ${{ github.action_path }}/scripts/run.ps1 -Action 'CI-Build' -WorkspaceName $env:DEV_WORKSPACE -UserString $env:USER_EMAIL
