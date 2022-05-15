@@ -111,9 +111,11 @@ Function Environment-Setup{
     }else{
         Write-Host "------STANDARD ENVIRONMENT CONFIGURATION CHOSEN------"
         #Create workspace
+        $dev_var="DEV"
+        $test_var="TEST"
         $workspace = New-PowerBIWorkspace -Name $ProjectName
-        $test_workspace = New-PowerBIWorkspace -Name ($ProjectName)+"TEST"
-        $dev_workspace = New-PowerBIWorkspace -Name ($ProjectName)+"DEV"
+        $test_workspace = New-PowerBIWorkspace -Name "$($ProjectName)-$($test_var)"
+        $dev_workspace = New-PowerBIWorkspace -Name "$($ProjectName)-$($dev_var)"
         $workspaces = $workspace,$test_workspace,$dev_workspace
 
         #Adding User As Admin
