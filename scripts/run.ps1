@@ -95,7 +95,7 @@ Function Environment-Setup{
         return
     }
 
-    if($Premium == "true"){
+    if($Premium -eq "true"){
         Write-Host "------PREMIUM ENVIRONMENT CONFIGURATION CHOSEN------"
         #Get Capacity ID
         $apiUri = "https://api.powerbi.com/v1.0/myorg/"
@@ -130,7 +130,6 @@ Function Environment-Setup{
         }
     }
 }
-    
 
 Function CI-Build {
     Param(
