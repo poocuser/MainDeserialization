@@ -94,19 +94,27 @@ Function Environment-Setup{
         Write-Host "Environment: $ProjectName already exists"
         return
     }else{
-        #Get Capacity ID
-        $apiUri = "https://api.powerbi.com/v1.0/myorg/"
-        $getCapacityUri = $apiUri + "capacities"
-        $capacitiesList = Invoke-PowerBI-API $getCapacityUri "Get"
-        $capacityID = $capacitiesList | Where-Object {$_.displayName -eq "embedpbi"}
-        $capacityID.id
-        #Create workspace
-        Write-Host "Trying to create workspace: $ProjectName"
-        $workspace = New-PowerBIWorkspace -Name $ProjectName
-        #Set Capacity
-        Set-PowerBIWorkspace  -Id $workspace.Id -CapacityId $capacityID.id
-    }
 
+        if($Premium){
+            Write-Host "------PREMIUM ENVIRONMENT CONFIGURATION CHOSEN------"
+            #Get Capacity ID
+            $apiUri = "https://api.powerbi.com/v1.0/myorg/"
+            $getCapacityUri = $apiUri + "capacities"
+            $capacitiesList = Invoke-PowerBI-API $getCapacityUri "Get"
+            $capacityID = $capacitiesList | Where-Object {$_.displayName -eq "embedpbi"}
+            $capacityID.id
+            #Create workspace
+            Write-Host "Trying to create workspace: $ProjectName"
+            $workspace = New-PowerBIWorkspace -Name $ProjectName
+            #Set Capacity
+            Set-PowerBIWorkspace  -Id $workspace.Id -CapacityId $capacityID.id
+        }else{
+            Write-Host "------STANDARD ENVIRONMENT CONFIGURATION CHOSEN------"
+
+        }
+
+    }
+}
     #Setup environment
 #   Write-Host "Trying to setup environment: $ProjectName"
 #   $pipelineDisplayName = ($ProjectName)-"Pipelines"
@@ -124,9 +132,7 @@ Function Environment-Setup{
 #       $newPipeline = Invoke-PowerBIRestMethod -Url "pipelines"  -Method Post -Body $createPipelineBody | ConvertFrom-Json
     
     
-    }else{
-            Write-Host "-----STANDARD ENVIRONMENT CONFIGURATION CHOSEN------" 
-    }
+   
     
 
 
