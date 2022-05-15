@@ -135,7 +135,8 @@ Function Environment-Setup{
 
 Function CI-Build {
     Param(
-        [parameter(Mandatory = $true)]$ProjectName
+        [parameter(Mandatory = $true)]$ProjectName,
+        [parameter(Mandatory = $false)]$Premium
     )
     #Publish changed Pbix Files
     $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($dev_var)" }
