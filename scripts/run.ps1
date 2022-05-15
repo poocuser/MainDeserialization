@@ -110,30 +110,30 @@ Function Environment-Setup{
             Set-PowerBIWorkspace  -Id $workspace.Id -CapacityId $capacityID.id
         }else{
             Write-Host "------STANDARD ENVIRONMENT CONFIGURATION CHOSEN------"
+            #Create workspace
+            $workspace = New-PowerBIWorkspace -Name $ProjectName
+            $test_workspace = New-PowerBIWorkspace -Name ($ProjectName)-"TEST"
+            $dev_workspace = New-PowerBIWorkspace -Name ($ProjectName)-"DEV"
+            $workspaces = $workspace,$test_workspace,$dev_workspace
+
+            #Adding User As Admin
+            Write-Host "Adding user to a Workspace"
+            foreach ($workspace in $workspaces) {
+                $ApiUrl = "groups/" + $workspace.Id + "/users"
+                $WorkspaceUsers = (Invoke-PowerBIRestMethod -Url $ApiUrl -Method Get) | ConvertFrom-Json
+                $UserObject = $WorkspaceUsers.value | Where-Object { $_.emailAddress -like $UserEmail }
+                if($UserObject){
+                    Write-Output "User Already Exists"
+                }else{
+                    Add-PowerBIWorkspaceUser -Id $workspace.Id -UserEmailAddress $UserEmail -AccessRight Admin
+                }
+            }
+
 
         }
 
     }
 }
-    #Setup environment
-#   Write-Host "Trying to setup environment: $ProjectName"
-#   $pipelineDisplayName = ($ProjectName)-"Pipelines"
-#   $pipelineDescritionName = "Project Description"
-#
-#   if($Premium){
-#       Write-Host "------PREMIUM ENVIRONMENT CONFIGURATION CHOSEN------"
-#
-#       # Create a new deployment pipeline
-#       $createPipelineBody = @{ 
-#           displayName = $pipelineDisplayName
-#           description = $pipelineDescritionName
-#       } | ConvertTo-Json
-#
-#       $newPipeline = Invoke-PowerBIRestMethod -Url "pipelines"  -Method Post -Body $createPipelineBody | ConvertFrom-Json
-    
-    
-   
-    
 
 
 Function CI-Build {
@@ -156,25 +156,11 @@ Function CI-Build {
     #Publish changed Pbix Files
     $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $WorkspaceName }
     foreach ($pbix_file in $pbix_files) {
-        $report = $null
-        $dataset = $null
       
           Write-Information "Processing  $($pbix_file.FullName) ... "
       
           Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
           New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
-    }
-
-    #Adding User As Admin
-    Write-Host "Adding user to a Workspace"
-
-    $ApiUrl = "groups/" + $workspace.Id + "/users"
-    $WorkspaceUsers = (Invoke-PowerBIRestMethod -Url $ApiUrl -Method Get) | ConvertFrom-Json
-    $UserObject = $WorkspaceUsers.value | Where-Object { $_.emailAddress -like $UserEmail }
-    if($UserObject){
-        Write-Output "User Already Exists"
-    }else{
-        Add-PowerBIWorkspaceUser -Id $workspace.Id -UserEmailAddress $UserEmail -AccessRight Admin
     }
         
     
