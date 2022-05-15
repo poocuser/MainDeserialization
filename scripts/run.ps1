@@ -134,8 +134,6 @@ Function Environment-Setup{
 
     }
 }
-
-
 Function CI-Build {
     Param(
         [parameter(Mandatory = $true)]$WorkspaceName,
