@@ -4,7 +4,7 @@ Param(
     [Parameter(Mandatory = $false)][String]$TenantId,
     [Parameter(Mandatory = $false)][String]$ClientID,
     [Parameter(Mandatory = $true)][String]$ProjectName,
-    [Parameter(Mandatory = $true)][String]$Premium,
+    [Parameter(Mandatory = $true)][Boolean]$Premium,
     [Parameter(Mandatory = $true)][String]$Action,
     [Parameter(Mandatory = $false)][String]$WorkspaceName,
     [Parameter(Mandatory = $false)][String]$UserEmail
@@ -166,7 +166,7 @@ Function CI-Build {
 #ACTIONS-------------------------------------------------------------------------------------------------------------------
 if ($Action -eq "Environment-Setup") {
     Write-Host "Environment-Setup Started..."
-    Environment-Setup -ProjectName $ProjectName -Premium $Premium
+    Environment-Setup -ProjectName $ProjectName -Premium $env:PREMIUM
 }
 if ($Action -eq "CI-Build") {
     Write-Host "CI-Started..."
