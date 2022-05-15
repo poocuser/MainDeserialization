@@ -2,8 +2,10 @@
 Param(
     [Parameter(Mandatory = $false)][String]$Secret,
     [Parameter(Mandatory = $false)][String]$TenantId,
-    [Parameter(Mandatory = $true)][String]$ClientID,
-    [Parameter(Mandatory = $false)][String]$Action,
+    [Parameter(Mandatory = $false)][String]$ClientID,
+    [Parameter(Mandatory = $true)][String]$ProjectName,
+    [Parameter(Mandatory = $true)][String]$Premium,
+    [Parameter(Mandatory = $true)][String]$Action,
     [Parameter(Mandatory = $false)][String]$WorkspaceName,
     [Parameter(Mandatory = $false)][String]$UserEmail
 )
@@ -54,6 +56,16 @@ if ($triggered_by -like "*CI" -or $triggered_by -eq "push") {
    Write-Information "Changed .pbix files ($($pbix_files.Count)):"
    $pbix_files | ForEach-Object { Write-Information "$indention$($_.FullName)" }
 
+Function Environment-Setup{
+    [parameter(Mandatory = $true)]$ProjectName
+    [parameter(Mandatory = $true)]$Premium
+    
+    if($Premium){
+        Write-Host "PREMIUM CONFIGURATION CHOSEN" -Color Magenta
+    }else{
+        Write-Host "NO PREMIUM CONFIGURATION CHOSEN" -Color Magenta
+    }
+}
 
 Function CI-Build {
     Param(
@@ -98,8 +110,12 @@ Function CI-Build {
         
     
 }
-#ACTIONS
+#ACTIONS-------------------------------------------------------------------------------------------------------------------
+if ($Action -eq "Environment-Setup") {
+    Write-Host "Environment-Setu Started..."  -Color DarkCyan
+    Environment-Setup -ProjectName $ProjectName -Premium $Premium
+}
 if ($Action -eq "CI-Build") {
-    Write-Host "CI-Started..." 
+    Write-Host "CI-Started..."  -Color DarkCyan
     CI-Build -WorkspaceName $WorkspaceName -UserEmail $UserEmail
 }
