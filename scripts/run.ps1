@@ -55,17 +55,80 @@ if ($triggered_by -like "*CI" -or $triggered_by -eq "push") {
    }
    Write-Information "Changed .pbix files ($($pbix_files.Count)):"
    $pbix_files | ForEach-Object { Write-Information "$indention$($_.FullName)" }
+# ========================================================================================================================
+# Helper function used for Invoking Power BI API
+Function Invoke-PowerBI-API($uri, $method){
+ 
+    $TokenArgs = @{
+        Grant_type = 'client_credentials'
+        Resource   = 'https://analysis.windows.net/powerbi/api'
+        Client_id  = $ClientID
+        Client_secret = $Secret
+        Scope = "https://analysis.windows.net/powerbi/api/.default"
+    }
+    $out = Invoke-RestMethod -Uri https://login.microsoftonline.com/$tenant_id/oauth2/token -Body $TokenArgs -Method POST
+ 
+    #Save token
+    $tokenaccess = $out.access_token
 
+    #Get group API test
+    $header = @{
+        'Content-Type'='application/json'
+        'Authorization'= "Bearer  $tokenaccess" 
+    }
+
+    $ResponseOut = Invoke-RestMethod -Method $method -Uri $uri -Headers $header
+
+    return $ResponseOut.value
+}
+
+# ========================================================================================================================
 Function Environment-Setup{
     [parameter(Mandatory = $true)]$ProjectName
     [parameter(Mandatory = $true)]$Premium
     
-    if($Premium){
-        Write-Host "PREMIUM CONFIGURATION CHOSEN" -Color Magenta
+    # Get the workspace according to workspaceName
+    $workspace = Get-PowerBIWorkspace -Filter "name eq '$ProjectName'"
+    #Check if exists
+    if ($workspace) {
+        Write-Host "Environment: $ProjectName already exists"
+        return
     }else{
-        Write-Host "NO PREMIUM CONFIGURATION CHOSEN" -Color Magenta
+        #Get Capacity ID
+        $apiUri = "https://api.powerbi.com/v1.0/myorg/"
+        $getCapacityUri = $apiUri + "capacities"
+        $capacitiesList = Invoke-PowerBI-API $getCapacityUri "Get"
+        $capacityID = $capacitiesList | Where-Object {$_.displayName -eq "embedpbi"}
+        $capacityID.id
+        #Create workspace
+        Write-Host "Trying to create workspace: $ProjectName"
+        $workspace = New-PowerBIWorkspace -Name $ProjectName
+        #Set Capacity
+        Set-PowerBIWorkspace  -Id $workspace.Id -CapacityId $capacityID.id
     }
-}
+
+    #Setup environment
+#   Write-Host "Trying to setup environment: $ProjectName"
+#   $pipelineDisplayName = ($ProjectName)-"Pipelines"
+#   $pipelineDescritionName = "Project Description"
+#
+#   if($Premium){
+#       Write-Host "------PREMIUM ENVIRONMENT CONFIGURATION CHOSEN------"
+#
+#       # Create a new deployment pipeline
+#       $createPipelineBody = @{ 
+#           displayName = $pipelineDisplayName
+#           description = $pipelineDescritionName
+#       } | ConvertTo-Json
+#
+#       $newPipeline = Invoke-PowerBIRestMethod -Url "pipelines"  -Method Post -Body $createPipelineBody | ConvertFrom-Json
+    
+    
+    }else{
+            Write-Host "-----STANDARD ENVIRONMENT CONFIGURATION CHOSEN------" 
+    }
+    
+
 
 Function CI-Build {
     Param(
@@ -112,10 +175,10 @@ Function CI-Build {
 }
 #ACTIONS-------------------------------------------------------------------------------------------------------------------
 if ($Action -eq "Environment-Setup") {
-    Write-Host "Environment-Setu Started..."  -Color DarkCyan
+    Write-Host "Environment-Setup Started..."
     Environment-Setup -ProjectName $ProjectName -Premium $Premium
 }
 if ($Action -eq "CI-Build") {
-    Write-Host "CI-Started..."  -Color DarkCyan
+    Write-Host "CI-Started..."
     CI-Build -WorkspaceName $WorkspaceName -UserEmail $UserEmail
 }
