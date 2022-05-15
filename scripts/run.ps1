@@ -154,5 +154,5 @@ if ($Action -eq "Environment-Setup") {
 }
 if ($Action -eq "CI-Build") {
     Write-Host "CI-Started..."
-    CI-Build -ProjectName $ProjectName
+    CI-Build -ProjectName $ProjectName -Premium $Premium
 }
