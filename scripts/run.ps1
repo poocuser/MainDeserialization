@@ -30,6 +30,8 @@ $manual_trigger_path_filter = $env:MANUAL_TRIGGER_PATH_FILTER
 $tenant_id = $TenantId
 $client_id = $ClientID
 $client_secret = $Secret
+$dev_var="DEV"
+$test_var="TEST"
 #$login_info = "User ID=app:$client_id@$tenant_id;Password=$client_secret"
 
 [securestring]$sec_client_secret = ConvertTo-SecureString $client_secret -AsPlainText -Force
@@ -111,8 +113,6 @@ Function Environment-Setup{
     }else{
         Write-Host "------STANDARD ENVIRONMENT CONFIGURATION CHOSEN------"
         #Create workspace
-        $dev_var="DEV"
-        $test_var="TEST"
         $workspace = New-PowerBIWorkspace -Name $ProjectName
         $test_workspace = New-PowerBIWorkspace -Name "$($ProjectName)-$($test_var)"
         $dev_workspace = New-PowerBIWorkspace -Name "$($ProjectName)-$($dev_var)"
@@ -135,23 +135,10 @@ Function Environment-Setup{
 
 Function CI-Build {
     Param(
-        [parameter(Mandatory = $true)]$WorkspaceName,
-        [parameter(Mandatory = $true)]$UserEmail
+        [parameter(Mandatory = $true)]$ProjectName
     )
-    #Get WorkSpace
-    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $WorkspaceName }
-    #Check if exists
-    if ($workspace) {
-        Write-Host "Workspace: $WorkspaceName already exists"
-    }
-    else {
-        Write-Host "Trying to create workspace: $WorkspaceName"
-        New-PowerBIWorkspace -Name $WorkspaceName
-        Write-Host "Workspace: $WorkspaceName created!"
-    }
-
     #Publish changed Pbix Files
-    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $WorkspaceName }
+    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($dev_var)" }
     foreach ($pbix_file in $pbix_files) {
       
           Write-Information "Processing  $($pbix_file.FullName) ... "
@@ -159,15 +146,13 @@ Function CI-Build {
           Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
           New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
     }
-        
-    
 }
 #ACTIONS-------------------------------------------------------------------------------------------------------------------
 if ($Action -eq "Environment-Setup") {
     Write-Host "Environment-Setup Started..."
-    Environment-Setup -ProjectName $ProjectName -Premium $Premium
+    Environment-Setup -ProjectName $ProjectName -Premium $Premium -UserEmail $UserEmail
 }
 if ($Action -eq "CI-Build") {
     Write-Host "CI-Started..."
-    CI-Build -WorkspaceName $WorkspaceName -UserEmail $UserEmail
+    CI-Build -ProjectName $ProjectName
 }
