@@ -1,6 +1,6 @@
-name: 'Hello World'
-description: 'Greet someone...'
-author: TDF TECH AUTHORITY
+name: 'PowerBI CICD'
+description: '...'
+author: TDF TECH AUTHORITY We 🎔 TECH
 inputs:
   who-to-greet:  # id of input
     description: 'Who to greet'
