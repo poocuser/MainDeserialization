@@ -242,7 +242,7 @@ runs:
        ENVIRONMENT_EVENT: ${{ inputs.ENVIRONMENT_EVENT }}
        CHOICE: ${{ inputs.CHOICE }}
        NOTIFY: ${{ inputs.NOTIFY }}
-       INJECTED_ENV_VAR: ${{ secrets[github.event.inputs.PBI_TENANT_ID] }} 
+       INJECTED_ENV_VAR: ${{ github.event.inputs.PBI_TENANT_ID }} 
       shell: pwsh
       run: |
         #  ${{ github.action_path }}/scripts/run.ps1 -Action 'Environment-Setup' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM -UserEmail $env:USER_EMAIL
