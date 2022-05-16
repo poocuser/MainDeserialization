@@ -3,8 +3,8 @@ Param(
     [Parameter(Mandatory = $false)][String]$Secret,
     [Parameter(Mandatory = $false)][String]$TenantId,
     [Parameter(Mandatory = $false)][String]$ClientID,
-    [Parameter(Mandatory = $true)][String]$ProjectName,
-    [Parameter(Mandatory = $true)][String]$Premium,
+    [Parameter(Mandatory = $false)][String]$ProjectName,
+    [Parameter(Mandatory = $false)][String]$Premium,
     [Parameter(Mandatory = $true)][String]$Action,
     [Parameter(Mandatory = $false)][String]$WorkspaceName,
     [Parameter(Mandatory = $false)][String]$UserEmail
