@@ -29,20 +29,20 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - run: echo Hello ${{ inputs.who-to-greet }}.
-      shell: bash
-    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
-      shell: bash
-    - run: |
-        echo COMPOSITE PATH ${{ inputs.composite-path }}
-        cd $GITHUB_ACTION_PATH
-        ls
-        python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }} ${{ inputs.composite-path }}
-        echo SEPARATOR ${{ inputs.separator }}
-        echo FILES ${{ inputs.files }}
-        echo Github action path ${{github.action_path}}
-        echo Github WORKSPACE path  $GITHUB_WORKSPACE
-      shell: bash
+#   - run: echo Hello ${{ inputs.who-to-greet }}.
+#     shell: bash
+#   - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+#     shell: bash
+#   - run: |
+#       echo COMPOSITE PATH ${{ inputs.composite-path }}
+#       cd $GITHUB_ACTION_PATH
+#       ls
+#       python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }} ${{ inputs.composite-path }}
+#       echo SEPARATOR ${{ inputs.separator }}
+#       echo FILES ${{ inputs.files }}
+#       echo Github action path ${{github.action_path}}
+#       echo Github WORKSPACE path  $GITHUB_WORKSPACE
+#     shell: bash
 #   - name: Download Tabular Editor
 #     run: | 
 #         $TabularEditorUrl = "https://cdn.tabulareditor.com/files/te2/TabularEditor.Portable.zip" 
