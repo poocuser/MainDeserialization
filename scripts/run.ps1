@@ -157,3 +157,18 @@ if ($Action -eq "CI-Build") {
     Write-Host "CI-Started...#################################################################"
     CI-Build -ProjectName $ProjectName -Premium $Premium
 }
+if ($Action -eq "CD-Test") {
+    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
+        # get all .pbix files in the current repository
+        $pbix_files = Get-ChildItem -Path (Join-Path $root_path $manual_trigger_path_filter) -Recurse -Filter "*.pbix" -File
+
+        Write-Host "HEEERE...#################################################################"
+        Write-Host "holaa!!!" $pbix_files
+        Write-Host "triggered_by!!!" $triggered_by
+        Write-Host "ENVIRONMENT_EVENT!!!" $env:ENVIRONMENT_EVENT
+        Write-Host "CHOICE!!!" $env:CHOICE
+        Write-Host "NOTIFY!!!" $env:NOTIFY
+
+
+    }
+}
