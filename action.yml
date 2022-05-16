@@ -6,6 +6,9 @@ inputs:
     description: 'Who to greet'
     required: true
     default: 'World'
+  environment:
+    description: 'Who to greet'
+    required: true
   files:
     description: 'Assets to format'
     required: true
@@ -242,14 +245,20 @@ runs:
        ENVIRONMENT_EVENT: ${{ inputs.ENVIRONMENT_EVENT }}
        CHOICE: ${{ inputs.CHOICE }}
        NOTIFY: ${{ inputs.NOTIFY }}
-       INJECTED_ENV_VAR: ${{ github.event.inputs.PBI_TENANT_ID }} 
-       MY_SECRET: ${{ secrets.PBI_TENANT_ID }}
+       INJECTED_ENV_VAR: ${{ github.event.inputs.PBI_TENANT_ID }}
+       environment: ${{ inputs.environment }} 
+       AWS_ACCESS_KEY_ID: ${{ secrets.PBI_TENANT_ID }}
+       AWS_SECRET_ACCESS_KEY: ${{ secrets.PBI_CLIENT_ID }}
       shell: pwsh
       run: |
         #  ${{ github.action_path }}/scripts/run.ps1 -Action 'Environment-Setup' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM -UserEmail $env:USER_EMAIL
         #  ${{ github.action_path }}/scripts/run.ps1 -Action 'CI-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
         
           if ($env:GIT_TRIGGER_NAME -eq "Manual" -or $env:GIT_TRIGGER_NAME -eq "workflow_dispatch") {
-            Write-Information  $env:ENVIRONMENT_EVENT
+            Write-Information  $env:ENVIRONMENT_EVENT 
+            Write-Information $env:AWS_ACCESS_KEY_ID
+            Write-Information  $env:AWS_SECRET_ACCESS_KEY
+            Write-Information  $env:AWS_SECRET_ACCESS_KEY
+            Write-Information $env:environment
             #${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Test' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID
           }
