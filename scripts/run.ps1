@@ -98,7 +98,7 @@ Function Environment-Setup{
     }
 
     if($Premium -eq "true"){
-        Write-Host "------PREMIUM ENVIRONMENT CONFIGURATION CHOSEN------"
+        Write-Host "----------PREMIUM ENVIRONMENT CONFIGURATION CHOSEN----------"
         #Get Capacity ID
         $apiUri = "https://api.powerbi.com/v1.0/myorg/"
         $getCapacityUri = $apiUri + "capacities"
@@ -111,7 +111,7 @@ Function Environment-Setup{
         #Set Capacity
         Set-PowerBIWorkspace  -Id $workspace.Id -CapacityId $capacityID.id
     }else{
-        Write-Host "------STANDARD ENVIRONMENT CONFIGURATION CHOSEN------"
+        Write-Host "----------STANDARD ENVIRONMENT CONFIGURATION CHOSEN-----------"
         #Create workspace
         $workspace = New-PowerBIWorkspace -Name $ProjectName
         $test_workspace = New-PowerBIWorkspace -Name "$($ProjectName)-$($test_var)"
@@ -150,10 +150,10 @@ Function CI-Build {
 }
 #ACTIONS-------------------------------------------------------------------------------------------------------------------
 if ($Action -eq "Environment-Setup") {
-    Write-Host "Environment-Setup Started..."
+    Write-Host "ENVIRONMENT SETUP Started...#################################################################"
     Environment-Setup -ProjectName $ProjectName -Premium $Premium -UserEmail $UserEmail
 }
 if ($Action -eq "CI-Build") {
-    Write-Host "CI-Started..."
+    Write-Host "CI-Started...#################################################################"
     CI-Build -ProjectName $ProjectName -Premium $Premium
 }
