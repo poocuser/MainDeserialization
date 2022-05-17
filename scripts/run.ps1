@@ -159,6 +159,8 @@ Function CD-Build {
         "Prod Workspace" {$workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $ProjectName }}
      }
     #Publish Pbix Files
+    Write-Host "workspace...###################" $workspace 
+    Write-Host "workspaceName...###################" "$($ProjectName)-$($test_var)"
     foreach ($pbix_file in $pbix_files) {
         Write-Information "Processing  $($pbix_file.FullName) ... "
         Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
