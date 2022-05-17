@@ -40,7 +40,8 @@ runs:
           triggered_by=${{ github.event_name }}
           if [ "$triggered_by" = "Manual" || "$triggered_by" = "workflow_dispatch" ];
           then
-            continue
+            echo "Hello"
+            return
           else
             echo COMPOSITE PATH ${{ inputs.composite-path }}
             cd $GITHUB_ACTION_PATH
