@@ -37,14 +37,19 @@ runs:
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
       shell: bash
     - run: |
-        echo COMPOSITE PATH ${{ inputs.composite-path }}
-        cd $GITHUB_ACTION_PATH
-        ls
-        python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }} ${{ inputs.composite-path }}
-        echo SEPARATOR ${{ inputs.separator }}
-        echo FILES ${{ inputs.files }}
-        echo Github action path ${{github.action_path}}
-        echo Github WORKSPACE path  $GITHUB_WORKSPACE
+        $triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
+          if($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch"){
+            continue
+        }else{
+          echo COMPOSITE PATH ${{ inputs.composite-path }}
+          cd $GITHUB_ACTION_PATH
+          ls
+          python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }} ${{ inputs.composite-path }}
+          echo SEPARATOR ${{ inputs.separator }}
+          echo FILES ${{ inputs.files }}
+          echo Github action path ${{github.action_path}}
+          echo Github WORKSPACE path  $GITHUB_WORKSPACE
+        }
       shell: bash
     - name: Download Tabular Editor
       env:
@@ -263,7 +268,6 @@ runs:
        ENVIRONMENT_EVENT: ${{ inputs.ENVIRONMENT_EVENT }}
        CHOICE: ${{ inputs.CHOICE }}
        NOTIFY: ${{ inputs.NOTIFY }}
-       INJECTED_ENV_VAR: ${{ github.event.inputs.PBI_TENANT_ID }}
        environment: ${{ inputs.environment }} 
       shell: pwsh
       run: |

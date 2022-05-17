@@ -173,7 +173,6 @@ if ($Action -eq "Environment-Setup") {
         Write-Host "ENVIRONMENT SETUP Started...#################################################################"
         Environment-Setup -ProjectName $ProjectName -Premium $Premium -UserEmail $UserEmail
     }
-
 }
 ########CI
 if ($Action -eq "CI-Build") {
