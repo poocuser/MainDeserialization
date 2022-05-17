@@ -44,7 +44,7 @@ runs:
             #echo COMPOSITE PATH ${{ inputs.composite-path }}
             cd $GITHUB_ACTION_PATH
             ls
-            python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }} ${{ inputs.composite-path }}
+            python ${{ github.action_path }}/scripts/run.py ${{ inputs.files }} ${{ inputs.separator }} ${{ inputs.composite-path }}
             #echo SEPARATOR ${{ inputs.separator }}
             #echo FILES ${{ inputs.files }}
             #echo Github action path ${{github.action_path}}
