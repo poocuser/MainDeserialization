@@ -172,7 +172,9 @@ if ($Action -eq "Environment-Setup") {
 }
 ########CI
 if ($Action -eq "CI-Build") {
-    if ($triggered_by -ne "Manual" -or $triggered_by -ne "workflow_dispatch") {
+    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
+        Continue
+    }else{
         Write-Host "CI-Started...######################################################################"
         CI-Build -ProjectName $ProjectName -Premium $Premium
     }
