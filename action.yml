@@ -268,11 +268,10 @@ runs:
        ENVIRONMENT_EVENT: ${{ inputs.ENVIRONMENT_EVENT }}
        CHOICE: ${{ inputs.CHOICE }}
        NOTIFY: ${{ inputs.NOTIFY }}
-       INJECTED_ENV_VAR: ${{ github.event.inputs.PBI_TENANT_ID }}
-       environment: ${{ inputs.environment }} 
+       environment: ${{ inputs.environment }}
       shell: pwsh
       run: |
         $triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
-        if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
+        #if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
           ${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
-        }
+        #}

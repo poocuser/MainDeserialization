@@ -158,7 +158,6 @@ Function CD-Build {
         "Test Workspace" {$workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($test_var)" }}
         "Prod Workspace" {$workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $ProjectName }}
      }
-    
     #Publish Pbix Files
     foreach ($pbix_file in $pbix_files) {
         Write-Information "Processing  $($pbix_file.FullName) ... "
@@ -173,13 +172,15 @@ if ($Action -eq "Environment-Setup") {
 }
 ########CI
 if ($Action -eq "CI-Build") {
-    Write-Host "CI-Started...#################################################################"
-    CI-Build -ProjectName $ProjectName -Premium $Premium
+    if ($triggered_by -ne "Manual" -or $triggered_by -ne "workflow_dispatch") {
+        Write-Host "CI-Started...######################################################################"
+        CI-Build -ProjectName $ProjectName -Premium $Premium
+    }
 }
 ########CD
 if ($Action -eq "CD-Build") {
-    Write-Host "CD-Started...#################################################################"
     if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
+        Write-Host "CD-Started...######################################################################"
         CD-Build -ProjectName $ProjectName -Premium $Premium
     }
 }
