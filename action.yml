@@ -282,4 +282,4 @@ runs:
        environment: ${{ inputs.environment }} 
       shell: pwsh
       run: |
-        Write-Information "Finished! hhhere"
+        ${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Test' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID
