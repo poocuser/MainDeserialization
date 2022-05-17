@@ -228,7 +228,7 @@ runs:
 #         git commit -am "Automated extracton of JSON files from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
 #         git push
 #     shell: pwsh
-    - name: Call the PS script and publish PBI contents
+    - name: Call CI
       env:
        GIT_EVENT_BEFORE: ${{ github.event.before }}
        GIT_EVENT_AFTER: ${{ github.event.after }}
@@ -259,8 +259,6 @@ runs:
             Write-Information $env:environment
             #${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Test' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID
           }
-
-
     - name: Call CD
       env:
        GIT_EVENT_BEFORE: ${{ github.event.before }}
@@ -283,7 +281,6 @@ runs:
       shell: pwsh
       run: |
         $triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
-
         if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
-          ${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Test' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID
+          ${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Test' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
         }

@@ -1,10 +1,10 @@
 [CmdletBinding()]
 Param(
-    [Parameter(Mandatory = $false)][String]$Secret,
-    [Parameter(Mandatory = $false)][String]$TenantId,
-    [Parameter(Mandatory = $false)][String]$ClientID,
-    [Parameter(Mandatory = $false)][String]$ProjectName,
-    [Parameter(Mandatory = $false)][String]$Premium,
+    [Parameter(Mandatory = $true)][String]$Secret,
+    [Parameter(Mandatory = $true)][String]$TenantId,
+    [Parameter(Mandatory = $true)][String]$ClientID,
+    [Parameter(Mandatory = $true)][String]$ProjectName,
+    [Parameter(Mandatory = $true)][String]$Premium,
     [Parameter(Mandatory = $true)][String]$Action,
     [Parameter(Mandatory = $false)][String]$WorkspaceName,
     [Parameter(Mandatory = $false)][String]$UserEmail
@@ -132,7 +132,7 @@ Function Environment-Setup{
         }
     }
 }
-
+########CI
 Function CI-Build {
     Param(
         [parameter(Mandatory = $true)]$ProjectName,
@@ -143,9 +143,23 @@ Function CI-Build {
     foreach ($pbix_file in $pbix_files) {
       
           Write-Information "Processing  $($pbix_file.FullName) ... "
-      
           Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
           New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
+    }
+}
+########CD
+Function CD-Build {
+    Param(
+        [parameter(Mandatory = $true)]$ProjectName,
+        [parameter(Mandatory = $false)]$Premium
+    )
+    #Publish changed Pbix Files
+    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($test_var)" }
+    foreach ($pbix_file in $pbix_files) {
+      
+        Write-Information "Processing  $($pbix_file.FullName) ... "
+        Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
+        New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
     }
 }
 #ACTIONS-------------------------------------------------------------------------------------------------------------------
@@ -168,6 +182,8 @@ if ($Action -eq "CD-Test") {
         Write-Host "ENVIRONMENT_EVENT!!!" $env:ENVIRONMENT_EVENT
         Write-Host "CHOICE!!!" $env:CHOICE
         Write-Host "NOTIFY!!!" $env:NOTIFY
+
+        CD-Build -ProjectName $ProjectName -Premium $Premium
 
 
     }
