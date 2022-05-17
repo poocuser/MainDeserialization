@@ -167,22 +167,27 @@ Function CD-Build {
 }
 #ACTIONS-------------------------------------------------------------------------------------------------------------------
 if ($Action -eq "Environment-Setup") {
-    Write-Host "ENVIRONMENT SETUP Started...#################################################################"
-    Environment-Setup -ProjectName $ProjectName -Premium $Premium -UserEmail $UserEmail
+    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
+        Continue
+    }else{
+        Write-Host "ENVIRONMENT SETUP Started...#################################################################"
+        Environment-Setup -ProjectName $ProjectName -Premium $Premium -UserEmail $UserEmail
+    }
+
 }
 ########CI
 if ($Action -eq "CI-Build") {
     if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
         Continue
     }else{
-        Write-Host "CI-Started...######################################################################"
+        Write-Host "CI-Started...##################################################################################"
         CI-Build -ProjectName $ProjectName -Premium $Premium
     }
 }
 ########CD
 if ($Action -eq "CD-Build") {
     if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
-        Write-Host "CD-Started...######################################################################"
+        Write-Host "CD-Started...##################################################################################"
         CD-Build -ProjectName $ProjectName -Premium $Premium
     }
 }
