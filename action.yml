@@ -228,7 +228,7 @@ runs:
 #         git commit -am "Automated extracton of JSON files from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
 #         git push
 #     shell: pwsh
-    - name: Call CI
+    - name: Call CI Step
       env:
        GIT_EVENT_BEFORE: ${{ github.event.before }}
        GIT_EVENT_AFTER: ${{ github.event.after }}
@@ -251,7 +251,7 @@ runs:
       run: |
           ${{ github.action_path }}/scripts/run.ps1 -Action 'Environment-Setup' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM -UserEmail $env:USER_EMAIL
           ${{ github.action_path }}/scripts/run.ps1 -Action 'CI-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
-    - name: Call CD
+    - name: Call CD Step
       env:
        GIT_EVENT_BEFORE: ${{ github.event.before }}
        GIT_EVENT_AFTER: ${{ github.event.after }}
