@@ -38,7 +38,7 @@ runs:
       shell: bash
     - run: |
           triggered_by=${{ github.event_name }}
-          if [ "$triggered_by" = "Manual" || "$triggered_by" = "workflow_dispatch" ];
+          if [ "$triggered_by" == "workflow_dispatch" ];
           then
             echo "Hello"
             return
