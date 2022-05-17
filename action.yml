@@ -259,3 +259,27 @@ runs:
             Write-Information $env:environment
             #${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Test' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID
           }
+
+
+    - name: Call CD
+      env:
+       GIT_EVENT_BEFORE: ${{ github.event.before }}
+       GIT_EVENT_AFTER: ${{ github.event.after }}
+       GIT_TRIGGER_NAME: ${{ github.event_name }}
+       MANUAL_TRIGGER_PATH_FILTER: ${{ github.event.inputs.path_filter }}
+       PBI_PREMIUM_WORKSPACE_ID: ${{ inputs.PBI_PREMIUM_WORKSPACE_ID }}
+       PBI_TENANT_ID: ${{ inputs.PBI_TENANT_ID }}
+       PBI_CLIENT_ID: ${{ inputs.PBI_CLIENT_ID }}
+       PBI_CLIENT_SECRET: ${{ inputs.PBI_CLIENT_SECRET }}
+       PROJECT_NAME: ${{ inputs.PROJECT_NAME }}
+       PREMIUM: ${{ inputs.PREMIUM }}
+       DEV_WORKSPACE: ${{ inputs.DEV_WORKSPACE }}
+       USER_EMAIL: ${{ inputs.USER_EMAIL }}
+       ENVIRONMENT_EVENT: ${{ inputs.ENVIRONMENT_EVENT }}
+       CHOICE: ${{ inputs.CHOICE }}
+       NOTIFY: ${{ inputs.NOTIFY }}
+       INJECTED_ENV_VAR: ${{ github.event.inputs.PBI_TENANT_ID }}
+       environment: ${{ inputs.environment }} 
+      shell: pwsh
+      run: |
+        Write-Information "Finished! hhhere"
