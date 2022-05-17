@@ -41,7 +41,7 @@ runs:
           if [ "$triggered_by" == "workflow_dispatch" ];
           then
             echo "Hello"
-            return
+            continue
           else
             echo COMPOSITE PATH ${{ inputs.composite-path }}
             cd $GITHUB_ACTION_PATH
