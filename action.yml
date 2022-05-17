@@ -282,4 +282,6 @@ runs:
        environment: ${{ inputs.environment }} 
       shell: pwsh
       run: |
-        ${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Test' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID
+        if (${{ github.event_name }} -eq "Manual" -or ${{ github.event_name }} -eq "workflow_dispatch") {
+          ${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Test' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID
+        }
