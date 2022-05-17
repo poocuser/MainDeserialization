@@ -40,17 +40,17 @@ runs:
         $triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
           if($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch"){
             continue
-        }else{
-          echo COMPOSITE PATH ${{ inputs.composite-path }}
-          cd $GITHUB_ACTION_PATH
-          ls
-          python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }} ${{ inputs.composite-path }}
-          echo SEPARATOR ${{ inputs.separator }}
-          echo FILES ${{ inputs.files }}
-          echo Github action path ${{github.action_path}}
-          echo Github WORKSPACE path  $GITHUB_WORKSPACE
-        }
-      shell: bash
+          }else{
+            #echo COMPOSITE PATH ${{ inputs.composite-path }}
+            #cd $GITHUB_ACTION_PATH
+            #ls
+            python scripts/run.py ${{ inputs.files }} ${{ inputs.separator }} ${{ inputs.composite-path }}
+            #echo SEPARATOR ${{ inputs.separator }}
+            #echo FILES ${{ inputs.files }}
+            #echo Github action path ${{github.action_path}}
+            #echo Github WORKSPACE path  $GITHUB_WORKSPACE
+          }
+      shell: pwsh
     - name: Download Tabular Editor
       env:
         GIT_EVENT_BEFORE: ${{ github.event.before }}
