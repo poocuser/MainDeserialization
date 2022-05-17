@@ -253,6 +253,8 @@ runs:
         #  ${{ github.action_path }}/scripts/run.ps1 -Action 'CI-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
         
           if ($env:GIT_TRIGGER_NAME -eq "Manual" -or $env:GIT_TRIGGER_NAME -eq "workflow_dispatch") {
+
+            Write-Information  "HELLO MOTHER FUCKER!!!!!!!!!" 
             Write-Information  $env:ENVIRONMENT_EVENT 
             Write-Information $env:environment
             #${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Test' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID
