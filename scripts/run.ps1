@@ -178,6 +178,7 @@ if ($Action -eq "CI-Build") {
 }
 ########CD
 if ($Action -eq "CD-Build") {
+    Write-Host "CD-Started...#################################################################"
     if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
         CD-Build -ProjectName $ProjectName -Premium $Premium
     }
