@@ -253,7 +253,7 @@ runs:
         #  ${{ github.action_path }}/scripts/run.ps1 -Action 'CI-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
           Write-Information  "HEEERE!!!!!!!!!" ${{ github.event_name }}
           if ($env:GIT_TRIGGER_NAME -eq "Manual" -or $env:GIT_TRIGGER_NAME -eq "workflow_dispatch") {
-
+            Write-Information  "HEEERE INSIDE!!!!!!!!!" ${{ github.event_name }}
             Write-Information  "HELLO MOTHER FUCKER!!!!!!!!!" 
             Write-Information  $env:ENVIRONMENT_EVENT 
             Write-Information $env:environment
