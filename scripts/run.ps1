@@ -153,10 +153,14 @@ Function CD-Build {
         [parameter(Mandatory = $true)]$ProjectName,
         [parameter(Mandatory = $false)]$Premium
     )
-    #Publish changed Pbix Files
-    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($test_var)" }
+    #Check choice input
+    switch($env:CHOICE){
+        "Test Workspace" {$workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($test_var)" }}
+        "Prod Workspace" {$workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $ProjectName }}
+     }
+    
+    #Publish Pbix Files
     foreach ($pbix_file in $pbix_files) {
-      
         Write-Information "Processing  $($pbix_file.FullName) ... "
         Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
         New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
@@ -167,24 +171,14 @@ if ($Action -eq "Environment-Setup") {
     Write-Host "ENVIRONMENT SETUP Started...#################################################################"
     Environment-Setup -ProjectName $ProjectName -Premium $Premium -UserEmail $UserEmail
 }
+########CI
 if ($Action -eq "CI-Build") {
     Write-Host "CI-Started...#################################################################"
     CI-Build -ProjectName $ProjectName -Premium $Premium
 }
+########CD
 if ($Action -eq "CD-Build") {
     if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
-        # get all .pbix files in the current repository
-        $pbix_files = Get-ChildItem -Path (Join-Path $root_path $manual_trigger_path_filter) -Recurse -Filter "*.pbix" -File
-
-        Write-Host "HEEERE...#################################################################"
-        Write-Host "holaa!!!" $pbix_files
-        Write-Host "triggered_by!!!" $triggered_by
-        Write-Host "ENVIRONMENT_EVENT!!!" $env:ENVIRONMENT_EVENT
-        Write-Host "CHOICE!!!" $env:CHOICE
-        Write-Host "NOTIFY!!!" $env:NOTIFY
-
         CD-Build -ProjectName $ProjectName -Premium $Premium
-
-
     }
 }
