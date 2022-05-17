@@ -39,9 +39,7 @@ runs:
     - run: |
           triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
           if triggered_by = "Manual" or $triggered_by = "workflow_dispatch"
-
             return
-          
           else
             echo COMPOSITE PATH ${{ inputs.composite-path }}
             cd $GITHUB_ACTION_PATH
