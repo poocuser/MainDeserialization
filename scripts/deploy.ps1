@@ -163,7 +163,7 @@ Foreach ($report in $reports) {
     try {
         Write-Host "== Importing $report_name to target workspace"
 
-        $new_report = New-PowerBIReport -WorkspaceId $target_workspace_ID -Path $temp_path -Name $report_name -ConflictAction Abort
+        $new_report = New-PowerBIReport -WorkspaceId $target_workspace_ID -Path $temp_path -Name $report_name -ConflictAction "CreateOrOverwrite"
                 
         # Get the report again because the dataset id is not immediately available with New-PowerBIReport
         $new_report = Get-PowerBIReport -WorkspaceId $target_workspace_ID -Id $new_report.id
