@@ -154,13 +154,12 @@ Function CD-Build {
         [parameter(Mandatory = $false)]$Premium
     )
     #Check choice input
-    switch($env:CHOICE){
-        "Test Workspace" {$workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($test_var)" }}
-        "Prod Workspace" {$workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $ProjectName }}
-     }
+    #switch($env:CHOICE){
+      #  "Test Workspace" {$workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($test_var)" }}
+     #   "Prod Workspace" {$workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $ProjectName }}
+     #}
+    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($test_var)" }
     #Publish Pbix Files
-    Write-Host "workspace...###################" $workspace 
-    Write-Host "workspaceName...###################" "$($ProjectName)-$($test_var)"
     foreach ($pbix_file in $pbix_files) {
         Write-Host "pbix_file...###################" $pbix_file
         Write-Information "Processing  $($pbix_file.FullName) ... "
