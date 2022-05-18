@@ -53,7 +53,7 @@ def main():
             zf = zipfile.ZipFile(file)
             data = json.loads(zf.read('Report/Layout').decode('utf-16-le'))
             #Connection
-            data0 = json.loads(zf.read('Connections').decode('utf-16-le'))
+            data0 = json.loads(zf.read('Connections'))
             data['config'] = json.loads(data['config'])
             if 'filters' in data:
                 data['filters'] = json.loads(data['filters'])
