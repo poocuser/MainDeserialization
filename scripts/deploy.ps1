@@ -48,7 +48,7 @@ function Assert-ModuleExists([string]$ModuleName) {
 }
 
 #endregion
-
+Write-Host "Deploy-Started...##################################################################################"
 # ==================================================================
 # PART 1: Verify that the Power BI Management module is installed
 #         and authenticate the current user.

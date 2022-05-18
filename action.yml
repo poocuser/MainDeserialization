@@ -297,13 +297,13 @@ runs:
       shell: pwsh
       run: |
         #Check choice input
-        switch($env:CHOICE){
-            "Test Workspace" {
-              ${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
-            }
-            "Prod Workspace" {
-              $test_var = "TEST"
-              ${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
-            }
+         Write-Information "CHOICE!!!!!!" $env:CHOICE
+        if ($env:CHOICE -like "*Test" -or $env:CHOICE -eq "Test Workspace") {
+          Write-Information "CHOICE INSIDE TEST!!!!!!" $env:CHOICE
+           ${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
+        }else{
+          Write-Information "CHOICE INSIDE PROD!!!!!!" $env:CHOICE
+            $test_var = "TEST"
+            ${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
         }
         
