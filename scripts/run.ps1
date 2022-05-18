@@ -162,6 +162,7 @@ Function CD-Build {
     Write-Host "workspace...###################" $workspace 
     Write-Host "workspaceName...###################" "$($ProjectName)-$($test_var)"
     foreach ($pbix_file in $pbix_files) {
+        Write-Host "pbix_file...###################" $pbix_file
         Write-Information "Processing  $($pbix_file.FullName) ... "
         Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
         New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
