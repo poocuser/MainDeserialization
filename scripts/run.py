@@ -52,6 +52,8 @@ def main():
 
             zf = zipfile.ZipFile(file)
             data = json.loads(zf.read('Report/Layout').decode('utf-16-le'))
+            #Connection
+            data0 = json.loads(zf.read('Connections').decode('utf-16-le'))
             data['config'] = json.loads(data['config'])
             if 'filters' in data:
                 data['filters'] = json.loads(data['filters'])
@@ -71,6 +73,9 @@ def main():
             file_name = os.path.basename(file)[:-5]
             with open(json_dir_path + '/' + file_name + '.json', "w") as f:
                 json.dump(data, f, indent=4)
+             #Connection
+            with open(output_path, "w") as f:
+                json.dump(data0, f, indent=4)
 
             print('Pretty Printed {}'.format(file))
 
