@@ -7,7 +7,9 @@ Param(
     [Parameter(Mandatory = $true)][String]$Premium,
     [Parameter(Mandatory = $true)][String]$Action,
     [Parameter(Mandatory = $false)][String]$WorkspaceName,
-    [Parameter(Mandatory = $false)][String]$UserEmail
+    [Parameter(Mandatory = $false)][String]$UserEmail,
+    [Parameter(Mandatory = $false)][String]$Notify,
+    [Parameter(Mandatory = $false)][String]$powerAutomateEndPoint
 )
 
 $ErrorActionPreference = "Stop"
@@ -193,14 +195,14 @@ if ($Action -eq "Data-Refresh") {
 ########Send Email Notification
 if ($Action -eq "Notification") {
     Write-Information "Sending_Notification-Started...##################################################################################"
-    $email_recipient = $env:NOTIFY
+    $email_recipient = $Notify
     if($email_recipient){
         Write-Host "A notification will be send to:" $email_recipient
     }else{
         Write-Host "No email Provided!"
         return
     }
-    $powerAutomateEndPoint = $env:URL_PowerAutomate_EndPoint
+    #$powerAutomateEndPoint = $env:URL_PowerAutomate_EndPoint
     if (!$powerAutomateEndPoint) {
         Write-Host "No Email endpoint Provided!"
         return
