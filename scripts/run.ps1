@@ -131,6 +131,54 @@ Function InvokePowerAutomate_Email{
 
     Invoke-WebRequest -Uri $Url -Method POST -Body $postParams -Headers $header | ConvertTo-HTML
 }
+######Environment-Setup
+Function Environment-Setup{
+    [parameter(Mandatory = $true)]$ProjectName
+    [parameter(Mandatory = $true)]$Premium
+
+    # Get the workspace according to workspaceName
+    $workspace = Get-PowerBIWorkspace -Filter "name eq '$ProjectName'"
+    #Check if exists
+    if ($workspace) {
+        Write-Host "Environment: $ProjectName already exists"
+        return
+    }
+
+    if($Premium -eq "true"){
+        Write-Host "----------PREMIUM ENVIRONMENT CONFIGURATION CHOSEN----------"
+        #Get Capacity ID
+        $apiUri = "https://api.powerbi.com/v1.0/myorg/"
+        $getCapacityUri = $apiUri + "capacities"
+        $capacitiesList = Invoke-PowerBI-API $getCapacityUri "Get"
+        $capacityID = $capacitiesList | Where-Object {$_.displayName -eq "embedpbi"}
+        $capacityID.id
+        #Create workspace
+        Write-Host "Trying to create workspace: $ProjectName"
+        $workspace = New-PowerBIWorkspace -Name $ProjectName
+        #Set Capacity
+        Set-PowerBIWorkspace  -Id $workspace.Id -CapacityId $capacityID.id
+    }else{
+        Write-Host "----------STANDARD ENVIRONMENT CONFIGURATION CHOSEN-----------"
+        #Create workspace
+        $workspace = New-PowerBIWorkspace -Name $ProjectName
+        $test_workspace = New-PowerBIWorkspace -Name "$($ProjectName)-$($test_var)"
+        $dev_workspace = New-PowerBIWorkspace -Name "$($ProjectName)-$($dev_var)"
+        $workspaces = $workspace,$test_workspace,$dev_workspace
+
+        #Adding User As Admin
+        Write-Host "Adding user to a Workspace"
+        foreach ($workspace in $workspaces) {
+            $ApiUrl = "groups/" + $workspace.Id + "/users"
+            $WorkspaceUsers = (Invoke-PowerBIRestMethod -Url $ApiUrl -Method Get) | ConvertFrom-Json
+            $UserObject = $WorkspaceUsers.value | Where-Object { $_.emailAddress -like $UserEmail }
+            if($UserObject){
+                Write-Output "User Already Exists"
+            }else{
+                Add-PowerBIWorkspaceUser -Id $workspace.Id -UserEmailAddress $UserEmail -AccessRight Admin
+            }
+        }
+    }
+}
 ########CI
 Function CI-Build {
     Param(
@@ -163,6 +211,7 @@ Function CD-Build {
     }
 }
 #---------------------------------------------------------ACTIONS--------------------------------------------------------------------------------
+######Environment-Setup
 if ($Action -eq "Environment-Setup") {
     if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
         Continue
