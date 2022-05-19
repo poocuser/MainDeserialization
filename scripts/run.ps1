@@ -34,6 +34,7 @@ $client_id = $ClientID
 $client_secret = $Secret
 $dev_var="DEV"
 $test_var="TEST"
+$powerAutomateEndPoint = $env:URL_PowerAutomate_EndPoint
 #$login_info = "User ID=app:$client_id@$tenant_id;Password=$client_secret"
 
 [securestring]$sec_client_secret = ConvertTo-SecureString $client_secret -AsPlainText -Force
@@ -252,7 +253,6 @@ if ($Action -eq "Notification") {
         return
     }
     Write-Information "ENDPOINT:" $env:URL_PowerAutomate_EndPoint
-    $powerAutomateEndPoint = $env:URL_PowerAutomate_EndPoint
     Write-Information "ENDPOINT:"  $powerAutomateEndPoint
     if (!$powerAutomateEndPoint) {
         Write-Host "No Email endpoint Provided!"
