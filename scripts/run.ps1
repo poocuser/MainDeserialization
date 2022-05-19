@@ -99,7 +99,7 @@ Function New-DatasetRefresh {
     $workspace = Get-PowerBIWorkspace -Filter "name eq '$WorkspaceName'"
     #$GroupPath = Get-PowerBIGroupPath -WorkspaceName $WorkspaceName -AccessToken $AccessToken
     #$set = Get-PowerBIDataSet -GroupPath $GroupPath -AccessToken $AccessToken -Name $DatasetName
-    $set = Get-PowerBIDataset -Filter "name eq '$WorkspaceName'"
+    $set = Get-PowerBIDataset -Filter "name eq '$DataSetName'"
     if ($set) {
         #$url = $powerbiUrl + $GroupPath + "/datasets/$($set.id)/refreshes"
         $url = "https://api.powerbi.com/v1.0/myorg/groups/$($workspace.Id)"+ "/datasets/$($set.id)/refreshes"

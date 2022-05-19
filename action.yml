@@ -315,7 +315,7 @@ runs:
             Write-Host "CHOICE INSIDE PROD!!!!!!" $env:CHOICE
               $test_var = "TEST"
               ${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
-              ${{ github.action_path }}/scripts/run.ps1 -Action 'Data-Refresh' -WorkspaceName $WorkspaceName -DataSetName $DataSetName -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
+              #${{ github.action_path }}/scripts/run.ps1 -Action 'Data-Refresh' -WorkspaceName $WorkspaceName -DataSetName $DataSetName -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
           }
         }
         
