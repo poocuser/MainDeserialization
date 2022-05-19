@@ -126,9 +126,9 @@ Function InvokePowerAutomate_Email{
         #"connectapitoken"="97fe6ab5b1a640909551e36a071ce9ed"
     } 
     $postParams = @{
-        UserEmail=$Notify; 
+        UserEmail=$Notify;
         WorkspaceName=$WorkspaceName;
-        WorkspaceWebUrl=$WorkspaceWebUrl
+        WorkspaceWebUrl=$WorkspaceWebUrl;
     } | ConvertTo-Json
 
     Invoke-WebRequest -Uri $PowerAutomateEndPoint -Method POST -Body $postParams -Headers $header | ConvertTo-HTML
