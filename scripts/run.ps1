@@ -9,7 +9,7 @@ Param(
     [Parameter(Mandatory = $false)][String]$WorkspaceName,
     [Parameter(Mandatory = $false)][String]$UserEmail,
     [Parameter(Mandatory = $false)][String]$Notify,
-    [Parameter(Mandatory = $false)][String]$powerAutomateEndPoint
+    [Parameter(Mandatory = $false)][String]$PowerAutomateEndPoint
 )
 
 $ErrorActionPreference = "Stop"
@@ -34,7 +34,8 @@ $client_id = $ClientID
 $client_secret = $Secret
 $dev_var="DEV"
 $test_var="TEST"
-$powerAutomateEndPoint = $env:URL_PowerAutomate_EndPoint
+#$PowerAutomateEndPoint = $env:URL_PowerAutomate_EndPoint
+Write-Host "OUTSIIIIIIIIDE FUNCTION:" $PowerAutomateEndPoint
 #$login_info = "User ID=app:$client_id@$tenant_id;Password=$client_secret"
 
 [securestring]$sec_client_secret = ConvertTo-SecureString $client_secret -AsPlainText -Force
@@ -243,6 +244,7 @@ if ($Action -eq "Data-Refresh") {
         New-DatasetRefresh -WorkspaceName $WorkspaceName -DataSetName $DataSetName
 }
 ########Send Email Notification
+Write-Information "Begun FUCNTION!!!!!!:"  $PowerAutomateEndPoint
 if ($Action -eq "Notification") {
     Write-Information "Sending_Notification-Started...##################################################################################"
     $email_recipient = $Notify
@@ -253,8 +255,8 @@ if ($Action -eq "Notification") {
         return
     }
     Write-Information "ENDPOINT:" $env:URL_PowerAutomate_EndPoint
-    Write-Information "ENDPOINT:"  $powerAutomateEndPoint
-    if (!$powerAutomateEndPoint) {
+    Write-Information "ENDPOINT2:"  $PowerAutomateEndPoint
+    if (!$PowerAutomateEndPoint) {
         Write-Host "No Email endpoint Provided!"
         return
     }
