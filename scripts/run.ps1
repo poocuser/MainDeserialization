@@ -36,6 +36,7 @@ $dev_var="DEV"
 $test_var="TEST"
 #$PowerAutomateEndPoint = $env:URL_PowerAutomate_EndPoint
 Write-Host "OUTSIIIIIIIIDE FUNCTION:" $PowerAutomateEndPoint
+$global:PowerAutomateEndPoint
 #$login_info = "User ID=app:$client_id@$tenant_id;Password=$client_secret"
 
 [securestring]$sec_client_secret = ConvertTo-SecureString $client_secret -AsPlainText -Force
