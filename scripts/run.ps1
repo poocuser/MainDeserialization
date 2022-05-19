@@ -120,6 +120,8 @@ Function InvokePowerAutomate_Email{
     [parameter(Mandatory = $true)]$WorkspaceName,
     [parameter(Mandatory = $true)]$WorkspaceWebUrl
 
+    Write-Host $WorkspaceWebUrl
+
     $header = @{
         "Accept"="application/json"
         "Content-Type"="application/json"
@@ -268,6 +270,10 @@ if ($Action -eq "Notification") {
         $workspaceName = "$($ProjectName)"
     }
     $getWorkspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $workspaceName }
+
+    $workspace_weburl = "https://app.powerbi.com/groups/$($getWorkspace.Id)/list"
+
+    Write-Host "LIIIIIIIIIINK:" $workspace_weburl
  
-    InvokePowerAutomate_Email -PowerAutomateEndPoint $PowerAutomateEndPoint -Notify $email_recipient -WorkspaceName $workspaceName -WorkspaceWebUrl "https://app.powerbi.com/groups/$($getWorkspace.Id)/list"
+    InvokePowerAutomate_Email -PowerAutomateEndPoint $PowerAutomateEndPoint -Notify $email_recipient -WorkspaceName $workspaceName -WorkspaceWebUrl $workspace_weburl
 }
