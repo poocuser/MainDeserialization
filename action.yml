@@ -25,6 +25,9 @@ inputs:
     description: 'dd'
     required: false
     default: "./Reports"
+  URL_PowerAutomate_EndPoint:
+    required: false
+    description: "Endpoint to send notifications"
 outputs:
   random-number:
     description: "Random number"
@@ -299,7 +302,8 @@ runs:
       run: |
         $triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
         if($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch"){
-
+          #Check choice input
+          Write-Host "URL_PowerAutomate_EndPointURL_PowerAutomate_EndPoint!!!!!!" $env:URL_PowerAutomate_EndPoint
           #Check choice input
           Write-Host "CHOICE!!!!!!" $env:CHOICE
           if ($env:CHOICE -like "*Test" -or $env:CHOICE -eq "Test Workspace") {
