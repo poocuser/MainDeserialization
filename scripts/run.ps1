@@ -116,7 +116,7 @@ Function New-DatasetRefresh {
 # ========================================================================================================================
 Function InvokePowerAutomate_Email{
     [parameter(Mandatory = $true)]$PowerAutomateEndPoint,
-    [parameter(Mandatory = $true)]$UserEmail,
+    [parameter(Mandatory = $true)]$Notify,
     [parameter(Mandatory = $true)]$WorkspaceName,
     [parameter(Mandatory = $true)]$WorkspaceWebUrl
 
@@ -126,7 +126,7 @@ Function InvokePowerAutomate_Email{
         #"connectapitoken"="97fe6ab5b1a640909551e36a071ce9ed"
     } 
     $postParams = @{
-        UserEmail=$UserEmail; 
+        UserEmail=$Notify; 
         WorkspaceName=$WorkspaceName;
         WorkspaceWebUrl=$WorkspaceWebUrl
     } | ConvertTo-Json
@@ -269,5 +269,5 @@ if ($Action -eq "Notification") {
     }
     $getWorkspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $workspaceName }
  
-    InvokePowerAutomate_Email -PowerAutomateEndPoint $PowerAutomateEndPoint -UserEmail $email_recipient -WorkspaceName $workspaceName -WorkspaceWebUrl "https://app.powerbi.com/groups/$($getWorkspace.Id)/list"
+    InvokePowerAutomate_Email -PowerAutomateEndPoint $PowerAutomateEndPoint -Notify $email_recipient -WorkspaceName $workspaceName -WorkspaceWebUrl "https://app.powerbi.com/groups/$($getWorkspace.Id)/list"
 }
