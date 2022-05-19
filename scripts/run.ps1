@@ -115,7 +115,7 @@ Function New-DatasetRefresh {
 # Helper function used for Sending Email to Power Automate
 # ========================================================================================================================
 Function InvokePowerAutomate_Email{
-    [parameter(Mandatory = $true)]$Url,
+    [parameter(Mandatory = $true)]$PowerAutomateEndPoint,
     [parameter(Mandatory = $true)]$UserEmail,
     [parameter(Mandatory = $true)]$WorkspaceName,
     [parameter(Mandatory = $true)]$WorkspaceWebUrl
@@ -131,7 +131,7 @@ Function InvokePowerAutomate_Email{
         WorkspaceWebUrl=$WorkspaceWebUrl
     } | ConvertTo-Json
 
-    Invoke-WebRequest -Uri $Url -Method POST -Body $postParams -Headers $header | ConvertTo-HTML
+    Invoke-WebRequest -Uri $PowerAutomateEndPoint -Method POST -Body $postParams -Headers $header | ConvertTo-HTML
 }
 ######Environment-Setup
 Function Environment-Setup{
@@ -269,5 +269,5 @@ if ($Action -eq "Notification") {
     }
     $getWorkspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $workspaceName }
  
-    InvokePowerAutomate_Email -Url $PowerAutomateEndPoint -UserEmail $email_recipient -WorkspaceName $workspaceName -WorkspaceWebUrl "https://app.powerbi.com/groups/$($getWorkspace.Id)/list"
+    InvokePowerAutomate_Email -PowerAutomateEndPoint $PowerAutomateEndPoint -UserEmail $email_recipient -WorkspaceName $workspaceName -WorkspaceWebUrl "https://app.powerbi.com/groups/$($getWorkspace.Id)/list"
 }
