@@ -302,6 +302,7 @@ runs:
       run: |
         $triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
         if($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch"){
+
           #Check choice input
           Write-Host "URL_PowerAutomate_EndPointURL_PowerAutomate_EndPoint!!!!!!" $env:URL_PowerAutomate_EndPoint
           #Check choice input
@@ -315,7 +316,10 @@ runs:
             Write-Host "CHOICE INSIDE PROD!!!!!!" $env:CHOICE
               $test_var = "TEST"
               ${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
+              $pa_endpoint = $env:URL_PowerAutomate_EndPoint
+              ${{ github.action_path }}/scripts/run.ps1 -Action 'Notification' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM -Notify $env:NOTIFY -PowerAutomateEndPoint $pa_endpoint
               #${{ github.action_path }}/scripts/run.ps1 -Action 'Data-Refresh' -WorkspaceName $WorkspaceName -DataSetName $DataSetName -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
           }
+
         }
         
