@@ -9,7 +9,8 @@ Param(
     [Parameter(Mandatory = $false)][String]$WorkspaceName,
     [Parameter(Mandatory = $false)][String]$UserEmail,
     [Parameter(Mandatory = $false)][String]$Notify,
-    [Parameter(Mandatory = $false)][String]$PowerAutomateEndPoint
+    [Parameter(Mandatory = $false)][String]$PowerAutomateEndPoint,
+    [Parameter(Mandatory = $false)][String]$WorkspaceWebUrl
 )
 
 $ErrorActionPreference = "Stop"
@@ -115,12 +116,14 @@ Function New-DatasetRefresh {
 # Helper function used for Sending Email to Power Automate
 # ========================================================================================================================
 Function InvokePowerAutomate_Email{
-    [parameter(Mandatory = $true)]$PowerAutomateEndPoint,
-    [parameter(Mandatory = $true)]$Notify,
-    [parameter(Mandatory = $true)]$WorkspaceName,
-    [parameter(Mandatory = $true)]$WorkspaceWebUrl
+    Param(
+        [parameter(Mandatory = $true)]$PowerAutomateEndPoint,
+        [parameter(Mandatory = $true)]$Notify,
+        [parameter(Mandatory = $true)]$WorkspaceName,
+        [parameter(Mandatory = $true)]$WorkspaceWebUrl
+    )
 
-    Write-Host $WorkspaceWebUrl
+    Write-Host "ddddddddddd" $WorkspaceWebUrl
 
     $header = @{
         "Accept"="application/json"
@@ -132,6 +135,8 @@ Function InvokePowerAutomate_Email{
         WorkspaceName=$WorkspaceName;
         WorkspaceWebUrl=$WorkspaceWebUrl;
     } | ConvertTo-Json
+
+    Write-Host "ccccccccccc"  $postParams
 
     Invoke-WebRequest -Uri $PowerAutomateEndPoint -Method POST -Body $postParams -Headers $header | ConvertTo-HTML
 }
