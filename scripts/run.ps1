@@ -83,54 +83,51 @@ Function Invoke-PowerBI-API($uri, $method){
 
     return $ResponseOut.value
 }
-
 # ========================================================================================================================
-Function Environment-Setup{
-    [parameter(Mandatory = $true)]$ProjectName
-    [parameter(Mandatory = $true)]$Premium
+# Helper function used for Refreshing Dataset trought Invoking Power BI API
+Function New-DatasetRefresh {
+    Param(
+        [parameter(Mandatory = $true)][string]$WorkspaceName,
+        [parameter(Mandatory = $true)][string]$DataSetName
+        #[parameter(Mandatory = $true)]$AccessToken
+    )
+    $workspace = Get-PowerBIWorkspace -Filter "name eq '$WorkspaceName'"
+    #$GroupPath = Get-PowerBIGroupPath -WorkspaceName $WorkspaceName -AccessToken $AccessToken
+    #$set = Get-PowerBIDataSet -GroupPath $GroupPath -AccessToken $AccessToken -Name $DatasetName
+    $set = Get-PowerBIDataset -Filter "name eq '$WorkspaceName'"
+    if ($set) {
+        #$url = $powerbiUrl + $GroupPath + "/datasets/$($set.id)/refreshes"
+        $url = "https://api.powerbi.com/v1.0/myorg/groups/$($workspace.Id)"+ "/datasets/$($set.id)/refreshes"
+
+        #Invoke-API -Url $url -Method "Post" -ContentType "application/json" -AccessToken $AccessToken
+        Invoke-PowerBI-API -uri $url -method "Post"
+    }
+    else {
+        Write-Warning "The dataset: $DataSetName does not exist.."
+    }
     
-    # Get the workspace according to workspaceName
-    $workspace = Get-PowerBIWorkspace -Filter "name eq '$ProjectName'"
-    #Check if exists
-    if ($workspace) {
-        Write-Host "Environment: $ProjectName already exists"
-        return
-    }
+}
+# ========================================================================================================================
+# Helper function used for Sending Email to Power Automate
+# ========================================================================================================================
+Function InvokePowerAutomate_Email{
+    [parameter(Mandatory = $true)]$Url,
+    [parameter(Mandatory = $true)]$UserEmail,
+    [parameter(Mandatory = $true)]$WorkspaceName,
+    [parameter(Mandatory = $true)]$WorkspaceWebUrl
 
-    if($Premium -eq "true"){
-        Write-Host "----------PREMIUM ENVIRONMENT CONFIGURATION CHOSEN----------"
-        #Get Capacity ID
-        $apiUri = "https://api.powerbi.com/v1.0/myorg/"
-        $getCapacityUri = $apiUri + "capacities"
-        $capacitiesList = Invoke-PowerBI-API $getCapacityUri "Get"
-        $capacityID = $capacitiesList | Where-Object {$_.displayName -eq "embedpbi"}
-        $capacityID.id
-        #Create workspace
-        Write-Host "Trying to create workspace: $ProjectName"
-        $workspace = New-PowerBIWorkspace -Name $ProjectName
-        #Set Capacity
-        Set-PowerBIWorkspace  -Id $workspace.Id -CapacityId $capacityID.id
-    }else{
-        Write-Host "----------STANDARD ENVIRONMENT CONFIGURATION CHOSEN-----------"
-        #Create workspace
-        $workspace = New-PowerBIWorkspace -Name $ProjectName
-        $test_workspace = New-PowerBIWorkspace -Name "$($ProjectName)-$($test_var)"
-        $dev_workspace = New-PowerBIWorkspace -Name "$($ProjectName)-$($dev_var)"
-        $workspaces = $workspace,$test_workspace,$dev_workspace
+    $header = @{
+        "Accept"="application/json"
+        "Content-Type"="application/json"
+        #"connectapitoken"="97fe6ab5b1a640909551e36a071ce9ed"
+    } 
+    $postParams = @{
+        UserEmail=$UserEmail; 
+        WorkspaceName=$WorkspaceName;
+        WorkspaceWebUrl=$WorkspaceWebUrl
+    } | ConvertTo-Json
 
-        #Adding User As Admin
-        Write-Host "Adding user to a Workspace"
-        foreach ($workspace in $workspaces) {
-            $ApiUrl = "groups/" + $workspace.Id + "/users"
-            $WorkspaceUsers = (Invoke-PowerBIRestMethod -Url $ApiUrl -Method Get) | ConvertFrom-Json
-            $UserObject = $WorkspaceUsers.value | Where-Object { $_.emailAddress -like $UserEmail }
-            if($UserObject){
-                Write-Output "User Already Exists"
-            }else{
-                Add-PowerBIWorkspaceUser -Id $workspace.Id -UserEmailAddress $UserEmail -AccessRight Admin
-            }
-        }
-    }
+    Invoke-WebRequest -Uri $Url -Method POST -Body $postParams -Headers $header | ConvertTo-HTML
 }
 ########CI
 Function CI-Build {
@@ -153,11 +150,6 @@ Function CD-Build {
         [parameter(Mandatory = $true)]$ProjectName,
         [parameter(Mandatory = $false)]$Premium
     )
-    #Check choice input
-    #switch($env:CHOICE){
-      #  "Test Workspace" {$workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($test_var)" }}
-     #   "Prod Workspace" {$workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $ProjectName }}
-     #}
     $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($test_var)" }
     #Publish Pbix Files
     foreach ($pbix_file in $pbix_files) {
@@ -165,14 +157,15 @@ Function CD-Build {
         Write-Information "Processing  $($pbix_file.FullName) ... "
         Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
         New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
+        New-DatasetRefresh -WorkspaceName $workspace.Name -DataSetName $pbix_file.BaseName
     }
 }
-#ACTIONS-------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------ACTIONS--------------------------------------------------------------------------------
 if ($Action -eq "Environment-Setup") {
     if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
         Continue
     }else{
-        Write-Host "ENVIRONMENT SETUP Started...#################################################################"
+        Write-Host "ENVIRONMENT SETUP Started...####################################################################"
         Environment-Setup -ProjectName $ProjectName -Premium $Premium -UserEmail $UserEmail
     }
 }
@@ -181,14 +174,45 @@ if ($Action -eq "CI-Build") {
     if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
         Continue
     }else{
-        Write-Host "CI-Started...##################################################################################"
+        Write-Information "CI-Started...#####################################################################################"
         CI-Build -ProjectName $ProjectName -Premium $Premium
     }
 }
 ########CD
 if ($Action -eq "CD-Build") {
     if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
-        Write-Host "CD-Started...##################################################################################"
+        Write-Information "CD-Started...#########################################################################################"
         CD-Build -ProjectName $ProjectName -Premium $Premium
     }
+}
+########DatasetRefresh
+if ($Action -eq "Data-Refresh") {
+    Write-Information "DATA_REFRESH-Started...##################################################################################"
+        New-DatasetRefresh -WorkspaceName $WorkspaceName -DataSetName $DataSetName
+}
+########Send Email Notification
+if ($Action -eq "Notification") {
+    Write-Information "Sending_Notification-Started...##################################################################################"
+    $email_recipient = $env:NOTIFY
+    if($email_recipient){
+        Write-Host "A notification will be send to:" $email_recipient
+    }else{
+        Write-Host "No email Provided!"
+        return
+    }
+    $powerAutomateEndPoint = $env:URL_PowerAutomate_EndPoint
+    if (!$powerAutomateEndPoint) {
+        Write-Host "No Email endpoint Provided!"
+        return
+    }
+    $environment = $env:CHOICE
+    $workspaceName = ""
+    if ($environment -like "*Test" -or $environment -eq "Test Workspace") {
+        $workspaceName = "$($ProjectName)-$($test_var)"
+    }else{
+        $workspaceName = "$($ProjectName)"
+    }
+    $getWorkspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $workspaceName }
+ 
+    InvokePowerAutomate_Email -Url $powerAutomateEndPoint -UserEmail $email_recipient -WorkspaceName $workspaceName -WorkspaceWebUrl "https://app.powerbi.com/groups/$($getWorkspace.Id)/list"
 }

@@ -294,16 +294,24 @@ runs:
        CHOICE: ${{ inputs.CHOICE }}
        NOTIFY: ${{ inputs.NOTIFY }}
        environment: ${{ inputs.environment }}
+       URL_PowerAutomate_EndPoint: ${{ inputs.URL_PowerAutomate_EndPoint }}
       shell: pwsh
       run: |
-        #Check choice input
-         Write-Host "CHOICE!!!!!!" $env:CHOICE
-        if ($env:CHOICE -like "*Test" -or $env:CHOICE -eq "Test Workspace") {
-          Write-Information "CHOICE INSIDE TEST!!!!!!" $env:CHOICE
-           ${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
-        }else{
-          Write-Host "CHOICE INSIDE PROD!!!!!!" $env:CHOICE
-            $test_var = "TEST"
-            ${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
+        $triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
+        if($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch"){
+
+          #Check choice input
+          Write-Host "CHOICE!!!!!!" $env:CHOICE
+          if ($env:CHOICE -like "*Test" -or $env:CHOICE -eq "Test Workspace") {
+            Write-Information "CHOICE INSIDE TEST!!!!!!" $env:CHOICE
+            ${{ github.action_path }}/scripts/run.ps1 -Action 'CD-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
+            ${{ github.action_path }}/scripts/run.ps1 -Action 'Notification' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
+          }else{
+            Write-Host "CHOICE INSIDE PROD!!!!!!" $env:CHOICE
+              $test_var = "TEST"
+              ${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
+              ${{ github.action_path }}/scripts/run.ps1 -Action 'Data-Refresh' -WorkspaceName $WorkspaceName -DataSetName $DataSetName -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
+          }
+
         }
         
