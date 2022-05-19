@@ -253,6 +253,7 @@ if ($Action -eq "Notification") {
     }
     Write-Information "ENDPOINT:" $env:URL_PowerAutomate_EndPoint
     $powerAutomateEndPoint = $env:URL_PowerAutomate_EndPoint
+    Write-Information "ENDPOINT:"  $powerAutomateEndPoint
     if (!$powerAutomateEndPoint) {
         Write-Host "No Email endpoint Provided!"
         return
