@@ -269,5 +269,5 @@ if ($Action -eq "Notification") {
     }
     $getWorkspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $workspaceName }
  
-    InvokePowerAutomate_Email -Url $powerAutomateEndPoint -UserEmail $email_recipient -WorkspaceName $workspaceName -WorkspaceWebUrl "https://app.powerbi.com/groups/$($getWorkspace.Id)/list"
+    InvokePowerAutomate_Email -Url $PowerAutomateEndPoint -UserEmail $email_recipient -WorkspaceName $workspaceName -WorkspaceWebUrl "https://app.powerbi.com/groups/$($getWorkspace.Id)/list"
 }
