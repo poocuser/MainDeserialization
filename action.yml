@@ -40,6 +40,10 @@ runs:
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
       shell: bash
     - run: |
+          $root_path = (Get-Location).Path
+          $triggered_by = $env:BUILD_REASON + $env:GIT_TRIGGER_NAME
+            $git_event_before = $env:GIT_EVENT_BEFORE
+            $git_event_after = $env:GIT_EVENT_AFTER
            if ($triggered_by -like "*CI" -or $triggered_by -eq "push") {
  
               Write-Information "git diff --name-only $git_event_before $git_event_after --diff-filter=ACM ""*.pbix"""
@@ -57,6 +61,8 @@ runs:
                 Write-Host "MB" ((Get-Item $pbix_file).length/1MB)
                 Write-Host "GB" ((Get-Item $pbix_file).length/1GB)
               }
+            }else{
+              Write-Host "NO IF"
             }
       shell: pwsh
     - run: |
