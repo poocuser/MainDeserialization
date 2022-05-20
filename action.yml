@@ -67,11 +67,12 @@ runs:
                   Write-Host "MB" ((Get-Item $pbix_file).length/1MB)
                   Write-Host "GB" ((Get-Item $pbix_file).length/1GB)
 
-                  if(((Get-Item $pbix_file).length/1MB) -gt 8){
-                      Write-Error "Pbix Files with more than 25MB are not allowed for performance impact, please consider to filter your data source step"
+                  if(((Get-Item $pbix_file).length/1MB) -gt 20){
+                      Write-Error "Pbix Files with more than 20MB are not allowed for performance impact,, please consider to filter your data source step"
                       throw 
                   }else{
                     Write-Information "File size passed"
+                    continue
                   }
               }
             }else{
