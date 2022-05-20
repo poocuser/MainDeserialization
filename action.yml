@@ -39,7 +39,7 @@ runs:
       shell: bash
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
       shell: bash
-    - run: $file = ${{ inputs.separator }}'
+    - run: $file = ${{ inputs.files }}
         Write-Host "KB" ((Get-Item $file).length/1KB)
         Write-Host "MB" ((Get-Item $file).length/1MB)
         Write-Host "GB" ((Get-Item $file).length/1GB)
