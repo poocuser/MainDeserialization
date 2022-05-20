@@ -62,15 +62,17 @@ runs:
  
                 $pbix_files = Get-ChildItem -Path (Join-Path $root_path $manual_trigger_path_filter) -Recurse -Filter "*.pbix" -File
               }
-              foreach ($pbix_file in $pbix_files) {
-                Write-Host "KB" ((Get-Item $pbix_file).length/1KB)
-                Write-Host "MB" ((Get-Item $pbix_file).length/1MB)
-                Write-Host "GB" ((Get-Item $pbix_file).length/1GB)
+                foreach ($pbix_file in $pbix_files) {
+                  Write-Host "KB" ((Get-Item $pbix_file).length/1KB)
+                  Write-Host "MB" ((Get-Item $pbix_file).length/1MB)
+                  Write-Host "GB" ((Get-Item $pbix_file).length/1GB)
 
-                if(((Get-Item $pbix_file).length/1MB) > 8){
-                    Write-Error "Pbix Files with more than 25MB are not allowed for performance impact, please consider to filter your data source step"
-                    throw 
-                }
+                  if(((Get-Item $pbix_file).length/1MB) -gt 8){
+                      Write-Error "Pbix Files with more than 25MB are not allowed for performance impact, please consider to filter your data source step"
+                      throw 
+                  }else{
+                    Write-Information "File size passed"
+                  }
               }
             }else{
               Write-Host "NO IF"
