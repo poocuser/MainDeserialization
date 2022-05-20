@@ -39,10 +39,25 @@ runs:
       shell: bash
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
       shell: bash
-    - run: $file = ${{ inputs.files }}
-        Write-Host "KB" ((Get-Item $file).length/1KB)
-        Write-Host "MB" ((Get-Item $file).length/1MB)
-        Write-Host "GB" ((Get-Item $file).length/1GB)
+    - run: |
+           if ($triggered_by -like "*CI" -or $triggered_by -eq "push") {
+ 
+              Write-Information "git diff --name-only $git_event_before $git_event_after --diff-filter=ACM ""*.pbix"""
+              $pbix_files = @($(git diff --name-only $git_event_before $git_event_after --diff-filter=ACM "*.pbix"))
+              $pbix_files = $pbix_files | ForEach-Object { Join-Path $root_path $_ | Get-Item }
+ 
+              if ($pbix_files.Count -eq 0) {
+                Write-Warning "Something went wrong! Could not find any changed .pbix files using the above 'git diff' command! XD"
+                Write-Information "Getting all .pbix files in the repo to be sure to get all changes!!!"
+ 
+                $pbix_files = Get-ChildItem -Path (Join-Path $root_path $manual_trigger_path_filter) -Recurse -Filter "*.pbix" -File
+              }
+              foreach ($pbix_file in $pbix_files) {
+                Write-Host "KB" ((Get-Item $pbix_file).length/1KB)
+                Write-Host "MB" ((Get-Item $pbix_file).length/1MB)
+                Write-Host "GB" ((Get-Item $pbix_file).length/1GB)
+              }
+            }
       shell: pwsh
     - run: |
           triggered_by=${{ github.event_name }}
