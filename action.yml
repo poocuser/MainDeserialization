@@ -39,6 +39,11 @@ runs:
       shell: bash
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
       shell: bash
+    - run: $file = ${{ inputs.separator }}'
+        Write-Host "KB" ((Get-Item $file).length/1KB)
+        Write-Host "MB" ((Get-Item $file).length/1MB)
+        Write-Host "GB" ((Get-Item $file).length/1GB)
+      shell: pwsh
     - run: |
           triggered_by=${{ github.event_name }}
           if [ "$triggered_by" == "workflow_dispatch" ];
