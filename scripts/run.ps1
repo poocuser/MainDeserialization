@@ -217,7 +217,7 @@ Function CD-Build {
         Write-Information "Processing  $($pbix_file.FullName) ... "
         Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
         New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
-        New-DatasetRefresh -WorkspaceName $workspace.Name -DataSetName $pbix_file.BaseName
+        #New-DatasetRefresh -WorkspaceName $workspace.Name -DataSetName $pbix_file.BaseName
     }
 }
 #---------------------------------------------------------ACTIONS--------------------------------------------------------------------------------
