@@ -219,9 +219,9 @@ Function CiBuild {
         
         Write-Information "codebasecodebasePath  $($codebase) ... "
 
-        cmd.exe  $executable $codebase -B "$($codebase)-Model.bim"
+        cmd.exe  $executable $codebase -B "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)-Model.bim"
 
-        Test-Path -Path "$($codebase)-Model.bim" -PathType leaf
+        Test-Path -Path "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)-Model.bim" -PathType leaf
         #Write-Information "Processing  $($pbix_file.FullName) ... "
         #Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
         #New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
