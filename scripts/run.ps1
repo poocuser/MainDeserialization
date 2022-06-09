@@ -219,7 +219,7 @@ Function CiBuild {
         
         Write-Information "codebasecodebasePath  $($codebase) ... "
 
-        cmd.exe  $executable  $codebase -B "$($codebase)-Model.bim"
+        cmd.exe  $executable $codebase -B "$($codebase)-Model.bim"
 
         Test-Path -Path "$($codebase)-Model.bim" -PathType leaf
         #Write-Information "Processing  $($pbix_file.FullName) ... "

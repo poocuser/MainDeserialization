@@ -284,19 +284,6 @@ runs:
               Write-Information "Finished! 🥳"
             }
       shell: pwsh
-    - name: Push JSON Files to Git repo
-      run: |
-          git config --global user.name '${{ github.actor }}'
-          git config --global user.email '${{ github.actor }}@users.noreply.github.com'
-          git stash
-          git pull
-          git stash apply
-          git add **/*.database.json
-          git add **/*.json
-          git status --porcelain
-          git commit -am "Automated extracton of JSON files from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
-          git push
-      shell: pwsh
     - name: Call CI Step
       env:
        GIT_EVENT_BEFORE: ${{ github.event.before }}
@@ -320,6 +307,21 @@ runs:
           ${{ github.action_path }}/scripts/run.ps1 -Action 'Environment-Setup' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM -UserEmail $env:USER_EMAIL
           #${{ github.action_path }}/scripts/run.ps1 -Action 'CI-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
           ${{ github.action_path }}/scripts/run.ps1 -Action 'CiBuild' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
+    - name: Push JSON Files to Git repo
+      run: |
+          git config --global user.name '${{ github.actor }}'
+          git config --global user.email '${{ github.actor }}@users.noreply.github.com'
+          git stash
+          git pull
+          git stash apply
+          git add **/*.database.json
+          git add **/*.json
+          git add **/*.bim
+          git add **/*Model.bim
+          git status --porcelain
+          git commit -am "Automated extracton of JSON files from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
+          git push
+      shell: pwsh
     - name: Call CD Step
       env:
        GIT_EVENT_BEFORE: ${{ github.event.before }}
