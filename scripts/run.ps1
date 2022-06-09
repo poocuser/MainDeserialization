@@ -204,6 +204,29 @@ Function CI-Build {
           New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
     }
 }
+########CI###########
+Function CiBuild {
+    Param(
+        [parameter(Mandatory = $true)]$ProjectName,
+        [parameter(Mandatory = $false)]$Premium
+    )
+    #Publish changed Pbix Files
+    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($dev_var)" }
+    foreach ($pbix_file in $pbix_files) {
+      
+        $executable = Join-Path $root_path TabularEditor.exe
+        $codebase = "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName).database.json"
+        
+        Write-Information "codebasecodebasePath  $($codebase) ... "
+
+        cmd.exe  $executable  $codebase -B "$($codebase)-Model.bim"
+
+        Test-Path -Path "$($codebase)-Model.bim" -PathType leaf
+        #Write-Information "Processing  $($pbix_file.FullName) ... "
+        #Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
+        #New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
+    }
+}
 ########CD
 Function CD-Build {
     Param(
@@ -237,6 +260,15 @@ if ($Action -eq "CI-Build") {
     }else{
         Write-Information "CI-Started...#####################################################################################"
         CI-Build -ProjectName $ProjectName -Premium $Premium
+    }
+}
+########CI#######
+if ($Action -eq "CiBuild") {
+    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
+        Continue
+    }else{
+        Write-Information "CI-Started...#####################################################################################"
+        CiBuild -ProjectName $ProjectName -Premium $Premium
     }
 }
 ########CD
