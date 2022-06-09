@@ -216,12 +216,17 @@ Function CiBuild {
       
         $executable = Join-Path $root_path TabularEditor.exe
         $codebase = "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName).database.json"
+        $targetBim = "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)Model.bim"
         
         Write-Information "codebasecodebasePath  $($codebase) ... "
+        Write-Information "targetBim  $($targetBim ) ... "
+        Write-Information "pbix_file.BaseName  $($pbix_file.BaseName ) ... "
+        Write-Information "pbix_file.DirectoryName  $($pbix_file.DirectoryName ) ... "
+        #"$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)-Model.bim"
 
-        cmd.exe  $executable $codebase -B "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)-Model.bim"
+        cmd.exe  $executable $codebase -B $targetBim
 
-        Test-Path -Path "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)-Model.bim" -PathType leaf
+        Test-Path -Path $targetBim -PathType leaf
         #Write-Information "Processing  $($pbix_file.FullName) ... "
         #Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
         #New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
