@@ -222,8 +222,6 @@ Function CiBuild {
         Write-Information "targetBim  $($targetBim ) ... "
         Write-Information "pbix_file.BaseName  $($pbix_file.BaseName ) ... "
         Write-Information "pbix_file.DirectoryName  $($pbix_file.DirectoryName ) ... "
-        #"$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)-Model.bim"
-        #cmd.exe  $executable $codebase -B $targetBim
 
         $buildParams = @(
 			"""$codebase"""
@@ -250,11 +248,10 @@ Function CiBuild {
         if ($p2.ExitCode -ne 0) {
 			Write-Error "$indention Failed to deploy .bim file !"
 		}
-        #$p2 = Start-Process -FilePath $executable "D:\a\deployBim\deployBim\Model.bim" -D "Data Source="powerbi://api.powerbi.com/v1.0/myorg/Embedded";User ID=app:a6b79634-8f18-471e-81e8-cb9b60f87942@1234b804-8fd3-488c-868a-6a81443bd23d;Password=pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J;" "MergedEasySalesReport" -O -C -P -R -M -E -V
 
-        #Write-Information "Processing  $($pbix_file.FullName) ... "
-        #Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
-        #New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
+        Write-Information "Processing  $($pbix_file.FullName) ... "
+        Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
+        New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
     }
 }
 ########CD
