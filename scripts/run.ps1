@@ -37,7 +37,7 @@ $dev_var="DEV"
 $test_var="TEST"
 #$PowerAutomateEndPoint = $env:URL_PowerAutomate_EndPoint
 Write-Host "OUTSIIIIIIIIDE FUNCTION:" $PowerAutomateEndPoint
-#$login_info = "User ID=app:$client_id@$tenant_id;Password=$client_secret"
+$login_info = "User ID=app:$client_id@$tenant_id;Password=$client_secret"
 
 [securestring]$sec_client_secret = ConvertTo-SecureString $client_secret -AsPlainText -Force
 [pscredential]$credential = New-Object System.Management.Automation.PSCredential ($client_id, $sec_client_secret)
@@ -211,7 +211,7 @@ Function CiBuild {
         [parameter(Mandatory = $false)]$Premium
     )
     #Publish changed Pbix Files
-    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($dev_var)" }
+    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "Embedded" }
     foreach ($pbix_file in $pbix_files) {
       
         $executable = Join-Path $root_path TabularEditor.exe
@@ -223,21 +223,34 @@ Function CiBuild {
         Write-Information "pbix_file.BaseName  $($pbix_file.BaseName ) ... "
         Write-Information "pbix_file.DirectoryName  $($pbix_file.DirectoryName ) ... "
         #"$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)-Model.bim"
-
         #cmd.exe  $executable $codebase -B $targetBim
 
-        $params = @(
+        $buildParams = @(
 			"""$codebase"""
 			"-B ""$targetBim"""
 		)
 
 		Write-Information "$indention $executable $params"
-		$p = Start-Process -FilePath $executable -Wait -NoNewWindow -PassThru -ArgumentList $params
+		$p = Start-Process -FilePath $executable -Wait -NoNewWindow -PassThru -ArgumentList $buildParams
 
 		if ($p.ExitCode -ne 0) {
-			Write-Error "$indention Failed to extract .bim file from !"
+			Write-Error "$indention Failed to build .bim file  $codebase!"
 		}
         Test-Path -Path $targetBim -PathType leaf
+
+        $connection_string = "powerbi://api.powerbi.com/v1.0/myorg/$($workspace.Name);"
+
+        $releaseParams = @(
+			"""$targetBim"""
+            "-D ""Data Source=$connection_string;$login_info"""
+            """$($pbix_file.BaseName)-Release"""
+            -O -C -P -R -M -E -V
+		)
+        $p2 = Start-Process -FilePath $executable -Wait -NoNewWindow -PassThru -ArgumentList $releaseParams
+        if ($p2.ExitCode -ne 0) {
+			Write-Error "$indention Failed to deploy .bim file !"
+		}
+        #$p2 = Start-Process -FilePath $executable "D:\a\deployBim\deployBim\Model.bim" -D "Data Source="powerbi://api.powerbi.com/v1.0/myorg/Embedded";User ID=app:a6b79634-8f18-471e-81e8-cb9b60f87942@1234b804-8fd3-488c-868a-6a81443bd23d;Password=pO_7Q~KwPTSYnwzKj_YKdlcFfrZEhvGshbA-J;" "MergedEasySalesReport" -O -C -P -R -M -E -V
 
         #Write-Information "Processing  $($pbix_file.FullName) ... "
         #Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "

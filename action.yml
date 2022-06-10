@@ -318,7 +318,6 @@ runs:
           git add **/*.json
           git add **/*.bim
           git add **/*Model.bim
-          git add D:\a\PBI-Template\PBI-Template\Reports\EasySalesReportModel.bim
           git status --porcelain
           git commit -am "Automated extracton of JSON files from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
           git push
