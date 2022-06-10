@@ -257,13 +257,36 @@ Function CiBuild {
         #Get release dataset id
         $dataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object { $_.Name -eq "$($pbix_file.BaseName)-Release" }
 
-        #Bind to the merged dataset
+        #Bind to the merged dataset##
+                #$ScriptToRun= $PSScriptRoot + "\rebindReport.ps1"
+        #.$ScriptToRun -Workspace_Id $Workspace_Id -Report_Id $Report_Id -TargetDataset_Id $TargetDataset_Id
+        #$root_path/scripts/rebindReport.ps1 -Workspace_Id $workspace.Id -Report_Id $report.Id -TargetDataset_Id $dataset.Id
         $Workspace_Id = $workspace.Id 
         $Report_Id = $report.Id
         $TargetDataset_Id = $dataset.Id
-        $ScriptToRun= $PSScriptRoot + "\rebindReport.ps1"
-        .$ScriptToRun -Workspace_Id $Workspace_Id -Report_Id $Report_Id -TargetDataset_Id $TargetDataset_Id
-        #$root_path/scripts/rebindReport.ps1 -Workspace_Id $workspace.Id -Report_Id $report.Id -TargetDataset_Id $dataset.Id
+        # Base variables
+        $BasePowerBIRestApi = "https://api.powerbi.com/v1.0/myorg/"
+# Body to push in the Power BI API call
+$body = 
+@"
+    {
+	    datasetId: "$TargetDatasetId"
+    }
+"@ 
+
+# Rebind report task
+Write-Host -ForegroundColor White "Rebind report to specified dataset..."
+Try {
+    $RebindApiCall = $BasePowerBIRestApi + "groups/" + $WorkspaceId + "/reports/" + $ReportId + "/Rebind"
+    Invoke-PowerBIRestMethod -Method POST -Url $RebindApiCall -Body $body -ErrorAction Stop
+    # Write message if succeeded
+    Write-Host "Report" $ReportId "successfully binded to dataset" $TargetDatasetId -ForegroundColor Green
+}
+Catch{
+    # Write message if error
+    Write-Host "Unable to rebind report. An error occured" -ForegroundColor Red
+}
+
     }
 }
 ########CD
