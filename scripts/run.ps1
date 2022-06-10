@@ -223,11 +223,11 @@ Function CiBuild {
         Write-Information "pbix_file.BaseName  $($pbix_file.BaseName ) ... "
         Write-Information "pbix_file.DirectoryName  $($pbix_file.DirectoryName ) ... "
 
+        #Build file#
         $buildParams = @(
 			"""$codebase"""
 			"-B ""$targetBim"""
 		)
-
 		Write-Information "$indention $executable $params"
 		$p = Start-Process -FilePath $executable -Wait -NoNewWindow -PassThru -ArgumentList $buildParams
 
@@ -236,8 +236,8 @@ Function CiBuild {
 		}
         Test-Path -Path $targetBim -PathType leaf
 
+        #Release file#
         $connection_string = "powerbi://api.powerbi.com/v1.0/myorg/$($workspace.Name);"
-
         $releaseParams = @(
 			"""$targetBim"""
             "-D ""Data Source=$connection_string;$login_info"""
@@ -249,9 +249,16 @@ Function CiBuild {
 			Write-Error "$indention Failed to deploy .bim file !"
 		}
 
+        #Publish the report
         Write-Information "Processing  $($pbix_file.FullName) ... "
         Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
-        New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
+        $report = New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
+
+        #Get release dataset id
+        $dataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object { $_.Name -eq "$($pbix_file.BaseName)-Release" }
+        
+        #Bind to the merged dataset
+        $root_path"/scripts/rebindReport.ps1" -Workspace_Id $workspace.Id -Report_Id $report.Id -TargetDataset_Id $dataset.Id
     }
 }
 ########CD

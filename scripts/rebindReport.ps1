@@ -1,6 +1,17 @@
+[CmdletBinding()]
+Param(
+    [Parameter(Mandatory = $true)][String]$Workspace_Id,
+    [Parameter(Mandatory = $true)][String]$Report_Id,
+    [Parameter(Mandatory = $true)][String]$TargetDataset_Id,
+)
 # =================================================================================================================================================
 # Task execution
 # =================================================================================================================================================
+# Run parameters, please specify below parameters
+$WorkspaceId = $Workspace_Id
+$ReportId = $Report_Id
+$TargetDatasetId = $TargetDataset_Id
+
 # Base variables
 $BasePowerBIRestApi = "https://api.powerbi.com/v1.0/myorg/"
 # Body to push in the Power BI API call
