@@ -294,6 +294,7 @@ $body =
             Invoke-PowerBIRestMethod -Url "https://api.powerbi.com/v1.0/myorg/groups/$($workspace.Id)/datasets/$($tempDataset.Id)" -Method Delete
         }
     }
+}
 ########CD
 Function CD-Build {
     Param(
