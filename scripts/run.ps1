@@ -258,7 +258,9 @@ Function CiBuild {
         $dataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object { $_.Name -eq "$($pbix_file.BaseName)-Release" }
 
         #Bind to the merged dataset
-        $root_path/scripts/rebindReport.ps1 -Workspace_Id $workspace.Id -Report_Id $report.Id -TargetDataset_Id $dataset.Id
+        $ScriptToRun= $PSScriptRoot+"\scripts\rebindReport.ps1" -Workspace_Id $workspace.Id -Report_Id $report.Id -TargetDataset_Id $dataset.Id
+        &$ScriptToRun
+        #$root_path/scripts/rebindReport.ps1 -Workspace_Id $workspace.Id -Report_Id $report.Id -TargetDataset_Id $dataset.Id
     }
 }
 ########CD
