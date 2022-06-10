@@ -261,9 +261,9 @@ Function CiBuild {
                 #$ScriptToRun= $PSScriptRoot + "\rebindReport.ps1"
         #.$ScriptToRun -Workspace_Id $Workspace_Id -Report_Id $Report_Id -TargetDataset_Id $TargetDataset_Id
         #$root_path/scripts/rebindReport.ps1 -Workspace_Id $workspace.Id -Report_Id $report.Id -TargetDataset_Id $dataset.Id
-        $Workspace_Id = $workspace.Id 
-        $Report_Id = $report.Id
-        $TargetDataset_Id = $dataset.Id
+        $WorkspaceId = $workspace.Id 
+        $ReportId = $report.Id
+        $TargetDatasetId = $dataset.Id
         # Base variables
         $BasePowerBIRestApi = "https://api.powerbi.com/v1.0/myorg/"
 # Body to push in the Power BI API call
