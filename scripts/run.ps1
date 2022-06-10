@@ -224,9 +224,21 @@ Function CiBuild {
         Write-Information "pbix_file.DirectoryName  $($pbix_file.DirectoryName ) ... "
         #"$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)-Model.bim"
 
-        cmd.exe  $executable $codebase -B $targetBim
+        #cmd.exe  $executable $codebase -B $targetBim
 
+        $params = @(
+			"""$codebase"""
+			"-B ""$targetBim"""
+		)
+
+		Write-Information "$indention $executable $params"
+		$p = Start-Process -FilePath $executable -Wait -NoNewWindow -PassThru -ArgumentList $params
+
+		if ($p.ExitCode -ne 0) {
+			Write-Error "$indention Failed to extract .bim file from !"
+		}
         Test-Path -Path $targetBim -PathType leaf
+
         #Write-Information "Processing  $($pbix_file.FullName) ... "
         #Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
         #New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
