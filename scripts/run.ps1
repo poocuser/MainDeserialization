@@ -274,21 +274,26 @@ $body =
     }
 "@ 
 
-# Rebind report task
-Write-Host -ForegroundColor White "Rebind report to specified dataset..."
-Try {
-    $RebindApiCall = $BasePowerBIRestApi + "groups/" + $WorkspaceId + "/reports/" + $ReportId + "/Rebind"
-    Invoke-PowerBIRestMethod -Method POST -Url $RebindApiCall -Body $body -ErrorAction Stop
-    # Write message if succeeded
-    Write-Host "Report" $ReportId "successfully binded to dataset" $TargetDatasetId -ForegroundColor Green
-}
-Catch{
-    # Write message if error
-    Write-Host "Unable to rebind report. An error occured" -ForegroundColor Red
-}
+        # Rebind report task
+        Write-Host -ForegroundColor White "Rebind report to specified dataset..."
+        Try {
+            $RebindApiCall = $BasePowerBIRestApi + "groups/" + $WorkspaceId + "/reports/" + $ReportId + "/Rebind"
+            Invoke-PowerBIRestMethod -Method POST -Url $RebindApiCall -Body $body -ErrorAction Stop
+            # Write message if succeeded
+            Write-Host "Report" $ReportId "successfully binded to dataset" $TargetDatasetId -ForegroundColor Green
+        }
+        Catch{
+            # Write message if error
+            Write-Host "Unable to rebind report. An error occured" -ForegroundColor Red
+        }
 
+        #Remove temp dataset
+        $tempDataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object { $_.Name -eq "$($pbix_file.BaseName)" }
+        if ($tempDataset -ne $null) {
+            Write-Information "$indention Removing temporary PowerBI dataset ..."
+            Invoke-PowerBIRestMethod -Url "https://api.powerbi.com/v1.0/myorg/groups/$($workspace.Id)/datasets/$($tempDataset.Id)" -Method Delete
+        }
     }
-}
 ########CD
 Function CD-Build {
     Param(
