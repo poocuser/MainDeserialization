@@ -244,7 +244,7 @@ Function CiBuild {
 			"""$targetBim"""
             "-D ""Data Source=$connection_string;$login_info"""
             """$($pbix_file.BaseName)-Release"""
-            -O -C -P -R -M -E -V
+            "-O -C -P -R -M -E -V"
 		)
         $p2 = Start-Process -FilePath $executable -Wait -NoNewWindow -PassThru -ArgumentList $releaseParams
         if ($p2.ExitCode -ne 0) {
