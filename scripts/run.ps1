@@ -310,7 +310,7 @@ $body =
         $cmd = "$ScriptPath\deploy.ps1"
 
         #Invoke-Expression "$ScriptToRun $scriptParams"
-        $p3 = Start-Process -FilePath $cmd -Wait -NoNewWindow -PassThru -ArgumentList $scriptParams
+        $p3 = Start-Process -FilePath $ScriptToRun -Wait -NoNewWindow -PassThru -ArgumentList $scriptParams
         if ($p3.ExitCode -ne 0) {
 			Write-Error "$indention Failed to deploy .bim file !"
 		}
