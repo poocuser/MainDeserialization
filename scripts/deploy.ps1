@@ -19,16 +19,16 @@
 [CmdletBinding()]
 param
 (
-    [string] $SourceWorkspaceName,
+    [Parameter(Mandatory = $false)][string]$SourceWorkspaceName,
 
-    [string] $TargetWorkspaceName,
+    [Parameter(Mandatory = $false)][string]$TargetWorkspaceName,
 
-    [bool] $CreateTargetWorkspaceIfNotExists = $true,
+    [Parameter(Mandatory = $false)][bool]$CreateTargetWorkspaceIfNotExists = $true,
 
     [Parameter(Mandatory = $false)][String]$Secret,
     [Parameter(Mandatory = $false)][String]$TenantId,
     [Parameter(Mandatory = $false)][String]$ClientID,
-    [Parameter(Mandatory = $true)][String]$Premium
+    [Parameter(Mandatory = $false)][String]$Premium
 )
 
 #region Helper Functions 
