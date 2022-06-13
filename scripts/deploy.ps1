@@ -46,6 +46,10 @@ function Assert-ModuleExists([string]$ModuleName) {
         Write-Host "Module updated"
     }
 }
+Write-Host "SourceWorkspaceName 0"  $SourceWorkspaceName
+Write-Host "TargetWorkspaceName 0"  $TargetWorkspaceName
+Write-Host "args 0" $args[0]
+Write-Host "args 1" $args[1] 
 
 #endregion
 Write-Information "Deploy-Artifacts-Started...##################################################################################"
