@@ -294,7 +294,7 @@ $body =
             Invoke-PowerBIRestMethod -Url "https://api.powerbi.com/v1.0/myorg/groups/$($workspace.Id)/datasets/$($tempDataset.Id)" -Method Delete
         }
     }
-    $premiumWorkspace = "Embedded"
+    $premiumWorkspace = 'Embedded'
         $ScriptToRun= $PSScriptRoot + "\deploy.ps1"
         .$ScriptToRun -SourceWorkspaceName $premiumWorkspace -TargetWorkspaceName "$env:PROJECT_NAME-$($dev_var)" -Premium $env:PREMIUM
 
