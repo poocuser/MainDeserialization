@@ -189,223 +189,10 @@ Function Environment-Setup{
         }
     }
 }
-########CI
-Function CI-Build {
-    Param(
-        [parameter(Mandatory = $true)]$ProjectName,
-        [parameter(Mandatory = $false)]$Premium
-    )
-    #Publish changed Pbix Files
-    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($dev_var)" }
-    foreach ($pbix_file in $pbix_files) {
-      
-          Write-Information "Processing  $($pbix_file.FullName) ... "
-          Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
-          New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
-    }
-}
-########CI###########
-Function CiBuild {
-    Param(
-        [parameter(Mandatory = $true)]$ProjectName,
-        [parameter(Mandatory = $false)]$Premium
-    )
-    #Publish changed Pbix Files
-    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "Embedded" }
-    foreach ($pbix_file in $pbix_files) {
-      
-        $executable = Join-Path $root_path TabularEditor.exe
-        $codebase = "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName).database.json"
-        $targetBim = "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)Model.bim"
-        
-        Write-Information "codebasecodebasePath  $($codebase) ... "
-        Write-Information "targetBim  $($targetBim ) ... "
-        Write-Information "pbix_file.BaseName  $($pbix_file.BaseName ) ... "
-        Write-Information "pbix_file.DirectoryName  $($pbix_file.DirectoryName ) ... "
-
-        #Build file#
-        $buildParams = @(
-			"""$codebase"""
-			"-B ""$targetBim"""
-		)
-		Write-Information "$indention $executable $params"
-		$p = Start-Process -FilePath $executable -Wait -NoNewWindow -PassThru -ArgumentList $buildParams
-
-		if ($p.ExitCode -ne 0) {
-			Write-Error "$indention Failed to build .bim file  $codebase!"
-		}
-        Test-Path -Path $targetBim -PathType leaf
-
-        #Release file#
-        $connection_string = "powerbi://api.powerbi.com/v1.0/myorg/$($workspace.Name);"
-        $releaseParams = @(
-			"""$targetBim"""
-            "-D ""Data Source=$connection_string;$login_info"""
-            """$($pbix_file.BaseName)-Release"""
-            "-O -C -P -R -M -E -V"
-		)
-        $p2 = Start-Process -FilePath $executable -Wait -NoNewWindow -PassThru -ArgumentList $releaseParams
-        if ($p2.ExitCode -ne 0) {
-			Write-Error "$indention Failed to deploy .bim file !"
-		}
-
-        #Publish the report
-        Write-Information "Processing  $($pbix_file.FullName) ... "
-        Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
-        $report = New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
-
-        #Get release dataset id
-        $dataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object { $_.Name -eq "$($pbix_file.BaseName)-Release" }
-
-        #Bind to the merged dataset##
-        #$ScriptToRun= $PSScriptRoot + "\rebindReport.ps1"
-        #.$ScriptToRun -Workspace_Id $Workspace_Id -Report_Id $Report_Id -TargetDataset_Id $TargetDataset_Id
-        #$root_path/scripts/rebindReport.ps1 -Workspace_Id $workspace.Id -Report_Id $report.Id -TargetDataset_Id $dataset.Id
-        $WorkspaceId = $workspace.Id 
-        $ReportId = $report.Id
-        $TargetDatasetId = $dataset.Id
-        # Base variables
-        $BasePowerBIRestApi = "https://api.powerbi.com/v1.0/myorg/"
-# Body to push in the Power BI API call
-$body = 
-@"
-    {
-	    datasetId: "$TargetDatasetId"
-    }
-"@ 
-
-        # Rebind report task
-        Write-Host -ForegroundColor White "Rebind report to specified dataset..."
-        Try {
-            $RebindApiCall = $BasePowerBIRestApi + "groups/" + $WorkspaceId + "/reports/" + $ReportId + "/Rebind"
-            Invoke-PowerBIRestMethod -Method POST -Url $RebindApiCall -Body $body -ErrorAction Stop
-            # Write message if succeeded
-            Write-Host "Report" $ReportId "successfully binded to dataset" $TargetDatasetId -ForegroundColor Green
-        }
-        Catch{
-            # Write message if error
-            Write-Host "Unable to rebind report. An error occured" -ForegroundColor Red
-        }
-
-        #Remove temp dataset
-        $tempDataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object { $_.Name -eq "$($pbix_file.BaseName)" }
-        if ($tempDataset -ne $null) {
-            Write-Information "$indention Removing temporary PowerBI dataset ..."
-            Invoke-PowerBIRestMethod -Url "https://api.powerbi.com/v1.0/myorg/groups/$($workspace.Id)/datasets/$($tempDataset.Id)" -Method Delete
-        }
-    }
-        $premiumWorkspace = 'Embedded'
-        $ScriptToRun= $PSScriptRoot + "\deploy.ps1"
-        #.$ScriptToRun -SourceWorkspaceName $premiumWorkspace -TargetWorkspaceName "$env:PROJECT_NAME-$($dev_var)"
-
-        $scriptParams = @(
-            "-SourceWorkspaceName ""Embedded"""
-            "-TargetWorkspaceName ""$($env:PROJECT_NAME)-DEV"""
-		)
-        #some processing
-        $ScriptPath = Split-Path $MyInvocation.InvocationName
-        $args = @()
-        $args += ("-SourceWorkspaceName", "Embedded")
-        $args += ("-TargetWorkspaceName", "$env:PROJECT_NAME-$($dev_var)")
-        $cmd = "$ScriptPath\deploy.ps1"
-
-        #Invoke-Expression "$ScriptToRun $scriptParams"
-
-        #${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
-
-        DeployReports -SourceWorkspaceName $premiumWorkspace -TargetWorkspaceName "$env:PROJECT_NAME-$($dev_var)"
-}
-########CD
-Function CD-Build {
-    Param(
-        [parameter(Mandatory = $true)]$ProjectName,
-        [parameter(Mandatory = $false)]$Premium
-    )
-    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($test_var)" }
-    #Publish Pbix Files
-    foreach ($pbix_file in $pbix_files) {
-        Write-Host "pbix_file...###################" $pbix_file
-        Write-Information "Processing  $($pbix_file.FullName) ... "
-        Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
-        New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
-        #New-DatasetRefresh -WorkspaceName $workspace.Name -DataSetName $pbix_file.BaseName
-    }
-}
-#---------------------------------------------------------ACTIONS--------------------------------------------------------------------------------
-######Environment-Setup
-if ($Action -eq "Environment-Setup") {
-    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
-        Continue
-    }else{
-        Write-Host "ENVIRONMENT SETUP Started...####################################################################"
-        Environment-Setup -ProjectName $ProjectName -Premium $Premium -UserEmail $UserEmail
-    }
-}
-########CI
-if ($Action -eq "CI-Build") {
-    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
-        Continue
-    }else{
-        Write-Information "CI-Started...#####################################################################################"
-        CI-Build -ProjectName $ProjectName -Premium $Premium
-    }
-}
-########CI#######
-if ($Action -eq "CiBuild") {
-    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
-        Continue
-    }else{
-        Write-Information "CI-Started...#####################################################################################"
-        CiBuild -ProjectName $ProjectName -Premium $Premium
-    }
-}
-########CD
-if ($Action -eq "CD-Build") {
-    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
-        Write-Information "CD-Started...#########################################################################################"
-        CD-Build -ProjectName $ProjectName -Premium $Premium
-    }
-}
-########DatasetRefresh
-if ($Action -eq "Data-Refresh") {
-    Write-Information "DATA_REFRESH-Started...##################################################################################"
-        New-DatasetRefresh -WorkspaceName $WorkspaceName -DataSetName $DataSetName
-}
-########Send Email Notification
-Write-Information "Begun FUCNTION!!!!!!:"  $PowerAutomateEndPoint
-if ($Action -eq "Notification") {
-    Write-Information "Sending_Notification-Started...##################################################################################"
-    $email_recipient = $Notify
-    if($email_recipient){
-        Write-Host "A notification will be send to:" $email_recipient
-    }else{
-        Write-Host "No email Provided!"
-        return
-    }
-    Write-Information "ENDPOINT:" $env:URL_PowerAutomate_EndPoint
-    Write-Information "ENDPOINT2:"  $PowerAutomateEndPoint
-    if (!$PowerAutomateEndPoint) {
-        Write-Host "No Email endpoint Provided!"
-        return
-    }
-    $environment = $env:CHOICE
-    $workspaceName = ""
-    if ($environment -like "*Test" -or $environment -eq "Test Workspace") {
-        $workspaceName = "$($ProjectName)-$($test_var)"
-    }else{
-        $workspaceName = "$($ProjectName)"
-    }
-    $getWorkspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $workspaceName }
-
-    $workspace_weburl = "https://app.powerbi.com/groups/$($getWorkspace.Id)/list"
-
-    Write-Host "LIIIIIIIIIINK:" $workspace_weburl
- 
-    InvokePowerAutomate_Email -PowerAutomateEndPoint $PowerAutomateEndPoint -Notify $email_recipient -WorkspaceName $workspaceName -WorkspaceWebUrl $workspace_weburl
-}
 ########################################-------------DEPLOY-----------######################################################
-
-########CD
+# ========================================================================================================================
+# Helper function used for Deploying reports across environments
+# ========================================================================================================================
 Function DeployReports {
     Param(
         [parameter(Mandatory = $true)]$SourceWorkspaceName,
@@ -641,4 +428,218 @@ Foreach ($dashboard in $dashboards) {
 # ==================================================================
 Write-Host "Cleaning up temporary files"
 Remove-Item -path $temp_path_root -Recurse
+}
+########CI
+Function CI-Build {
+    Param(
+        [parameter(Mandatory = $true)]$ProjectName,
+        [parameter(Mandatory = $false)]$Premium
+    )
+    #Publish changed Pbix Files
+    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($dev_var)" }
+    foreach ($pbix_file in $pbix_files) {
+      
+          Write-Information "Processing  $($pbix_file.FullName) ... "
+          Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
+          New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
+    }
+}
+########CI###########
+Function CiBuild {
+    Param(
+        [parameter(Mandatory = $true)]$ProjectName,
+        [parameter(Mandatory = $false)]$Premium
+    )
+    #Publish changed Pbix Files
+    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "Embedded" }
+    foreach ($pbix_file in $pbix_files) {
+      
+        $executable = Join-Path $root_path TabularEditor.exe
+        $codebase = "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName).database.json"
+        $targetBim = "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)Model.bim"
+        
+        Write-Information "codebasecodebasePath  $($codebase) ... "
+        Write-Information "targetBim  $($targetBim ) ... "
+        Write-Information "pbix_file.BaseName  $($pbix_file.BaseName ) ... "
+        Write-Information "pbix_file.DirectoryName  $($pbix_file.DirectoryName ) ... "
+
+        #Build file#
+        $buildParams = @(
+			"""$codebase"""
+			"-B ""$targetBim"""
+		)
+		Write-Information "$indention $executable $params"
+		$p = Start-Process -FilePath $executable -Wait -NoNewWindow -PassThru -ArgumentList $buildParams
+
+		if ($p.ExitCode -ne 0) {
+			Write-Error "$indention Failed to build .bim file  $codebase!"
+		}
+        Test-Path -Path $targetBim -PathType leaf
+
+        #Release file#
+        $connection_string = "powerbi://api.powerbi.com/v1.0/myorg/$($workspace.Name);"
+        $releaseParams = @(
+			"""$targetBim"""
+            "-D ""Data Source=$connection_string;$login_info"""
+            """$($pbix_file.BaseName)-Release"""
+            "-O -C -P -R -M -E -V"
+		)
+        $p2 = Start-Process -FilePath $executable -Wait -NoNewWindow -PassThru -ArgumentList $releaseParams
+        if ($p2.ExitCode -ne 0) {
+			Write-Error "$indention Failed to deploy .bim file !"
+		}
+
+        #Publish the report
+        Write-Information "Processing  $($pbix_file.FullName) ... "
+        Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
+        $report = New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
+
+        #Get release dataset id
+        $dataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object { $_.Name -eq "$($pbix_file.BaseName)-Release" }
+
+        #Bind to the merged dataset##
+        #$ScriptToRun= $PSScriptRoot + "\rebindReport.ps1"
+        #.$ScriptToRun -Workspace_Id $Workspace_Id -Report_Id $Report_Id -TargetDataset_Id $TargetDataset_Id
+        #$root_path/scripts/rebindReport.ps1 -Workspace_Id $workspace.Id -Report_Id $report.Id -TargetDataset_Id $dataset.Id
+        $WorkspaceId = $workspace.Id 
+        $ReportId = $report.Id
+        $TargetDatasetId = $dataset.Id
+        # Base variables
+        $BasePowerBIRestApi = "https://api.powerbi.com/v1.0/myorg/"
+# Body to push in the Power BI API call
+$body = 
+@"
+    {
+	    datasetId: "$TargetDatasetId"
+    }
+"@ 
+
+        # Rebind report task
+        Write-Host -ForegroundColor White "Rebind report to specified dataset..."
+        Try {
+            $RebindApiCall = $BasePowerBIRestApi + "groups/" + $WorkspaceId + "/reports/" + $ReportId + "/Rebind"
+            Invoke-PowerBIRestMethod -Method POST -Url $RebindApiCall -Body $body -ErrorAction Stop
+            # Write message if succeeded
+            Write-Host "Report" $ReportId "successfully binded to dataset" $TargetDatasetId -ForegroundColor Green
+        }
+        Catch{
+            # Write message if error
+            Write-Host "Unable to rebind report. An error occured" -ForegroundColor Red
+        }
+
+        #Remove temp dataset
+        $tempDataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object { $_.Name -eq "$($pbix_file.BaseName)" }
+        if ($tempDataset -ne $null) {
+            Write-Information "$indention Removing temporary PowerBI dataset ..."
+            Invoke-PowerBIRestMethod -Url "https://api.powerbi.com/v1.0/myorg/groups/$($workspace.Id)/datasets/$($tempDataset.Id)" -Method Delete
+        }
+    }
+        $premiumWorkspace = 'Embedded'
+        $ScriptToRun= $PSScriptRoot + "\deploy.ps1"
+        #.$ScriptToRun -SourceWorkspaceName $premiumWorkspace -TargetWorkspaceName "$env:PROJECT_NAME-$($dev_var)"
+
+        $scriptParams = @(
+            "-SourceWorkspaceName ""Embedded"""
+            "-TargetWorkspaceName ""$($env:PROJECT_NAME)-DEV"""
+		)
+        #some processing
+        $ScriptPath = Split-Path $MyInvocation.InvocationName
+        $args = @()
+        $args += ("-SourceWorkspaceName", "Embedded")
+        $args += ("-TargetWorkspaceName", "$env:PROJECT_NAME-$($dev_var)")
+        $cmd = "$ScriptPath\deploy.ps1"
+
+        #Invoke-Expression "$ScriptToRun $scriptParams"
+
+        #${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
+
+        DeployReports -SourceWorkspaceName $premiumWorkspace -TargetWorkspaceName "$env:PROJECT_NAME-$($dev_var)"
+}
+########CD
+Function CD-Build {
+    Param(
+        [parameter(Mandatory = $true)]$ProjectName,
+        [parameter(Mandatory = $false)]$Premium
+    )
+    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "$($ProjectName)-$($test_var)" }
+    #Publish Pbix Files
+    foreach ($pbix_file in $pbix_files) {
+        Write-Host "pbix_file...###################" $pbix_file
+        Write-Information "Processing  $($pbix_file.FullName) ... "
+        Write-Information "$indention Uploading $($pbix_file.FullName.Replace($root_path, '')) to $($workspace.Name)... "
+        New-PowerBIReport -Path $pbix_file.FullName -Name $pbix_file.BaseName -WorkspaceId $workspace.Id -ConflictAction "CreateOrOverwrite"
+        #New-DatasetRefresh -WorkspaceName $workspace.Name -DataSetName $pbix_file.BaseName
+    }
+}
+#---------------------------------------------------------ACTIONS--------------------------------------------------------------------------------
+######Environment-Setup
+if ($Action -eq "Environment-Setup") {
+    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
+        Continue
+    }else{
+        Write-Host "ENVIRONMENT SETUP Started...####################################################################"
+        Environment-Setup -ProjectName $ProjectName -Premium $Premium -UserEmail $UserEmail
+    }
+}
+########CI
+if ($Action -eq "CI-Build") {
+    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
+        Continue
+    }else{
+        Write-Information "CI-Started...#####################################################################################"
+        CI-Build -ProjectName $ProjectName -Premium $Premium
+    }
+}
+########CI#######
+if ($Action -eq "CiBuild") {
+    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
+        Continue
+    }else{
+        Write-Information "CI-Started...#####################################################################################"
+        CiBuild -ProjectName $ProjectName -Premium $Premium
+    }
+}
+########CD
+if ($Action -eq "CD-Build") {
+    if ($triggered_by -eq "Manual" -or $triggered_by -eq "workflow_dispatch") {
+        Write-Information "CD-Started...#########################################################################################"
+        CD-Build -ProjectName $ProjectName -Premium $Premium
+    }
+}
+########DatasetRefresh
+if ($Action -eq "Data-Refresh") {
+    Write-Information "DATA_REFRESH-Started...##################################################################################"
+        New-DatasetRefresh -WorkspaceName $WorkspaceName -DataSetName $DataSetName
+}
+########Send Email Notification
+Write-Information "Begun FUCNTION!!!!!!:"  $PowerAutomateEndPoint
+if ($Action -eq "Notification") {
+    Write-Information "Sending_Notification-Started...##################################################################################"
+    $email_recipient = $Notify
+    if($email_recipient){
+        Write-Host "A notification will be send to:" $email_recipient
+    }else{
+        Write-Host "No email Provided!"
+        return
+    }
+    Write-Information "ENDPOINT:" $env:URL_PowerAutomate_EndPoint
+    Write-Information "ENDPOINT2:"  $PowerAutomateEndPoint
+    if (!$PowerAutomateEndPoint) {
+        Write-Host "No Email endpoint Provided!"
+        return
+    }
+    $environment = $env:CHOICE
+    $workspaceName = ""
+    if ($environment -like "*Test" -or $environment -eq "Test Workspace") {
+        $workspaceName = "$($ProjectName)-$($test_var)"
+    }else{
+        $workspaceName = "$($ProjectName)"
+    }
+    $getWorkspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like $workspaceName }
+
+    $workspace_weburl = "https://app.powerbi.com/groups/$($getWorkspace.Id)/list"
+
+    Write-Host "LIIIIIIIIIINK:" $workspace_weburl
+ 
+    InvokePowerAutomate_Email -PowerAutomateEndPoint $PowerAutomateEndPoint -Notify $email_recipient -WorkspaceName $workspaceName -WorkspaceWebUrl $workspace_weburl
 }
