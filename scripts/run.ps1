@@ -295,7 +295,7 @@ $body =
         }
     }
         $premiumWorkspace = 'Embedded'
-        #$ScriptToRun= $PSScriptRoot + "\deploy.ps1"
+        $ScriptToRun= $PSScriptRoot + "\deploy.ps1"
         #.$ScriptToRun -SourceWorkspaceName $premiumWorkspace -TargetWorkspaceName "$env:PROJECT_NAME-$($dev_var)"
 
 
@@ -306,7 +306,7 @@ $body =
         $args += ("-TargetWorkspaceName", "$env:PROJECT_NAME-$($dev_var)")
         $cmd = "$ScriptPath\deploy.ps1"
 
-        Invoke-Expression "$cmd $args"
+        Invoke-Expression "$ScriptToRun $args"
 
 
         #${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
