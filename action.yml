@@ -307,6 +307,7 @@ runs:
           ${{ github.action_path }}/scripts/run.ps1 -Action 'Environment-Setup' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM -UserEmail $env:USER_EMAIL
           #${{ github.action_path }}/scripts/run.ps1 -Action 'CI-Build' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
           ${{ github.action_path }}/scripts/run.ps1 -Action 'CiBuild' -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -ProjectName $env:PROJECT_NAME -Premium $env:PREMIUM
+          ${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "Embedded" -TargetWorkspaceName "TDF1-DEV" -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
     - name: Push JSON Files to Git repo
       run: |
           git config --global user.name '${{ github.actor }}'

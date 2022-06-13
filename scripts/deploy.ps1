@@ -25,10 +25,10 @@ param
 
     [Parameter(Mandatory = $false)][bool]$CreateTargetWorkspaceIfNotExists = $true,
 
-    #[Parameter(Mandatory = $false)][String]$Secret,
-    #[Parameter(Mandatory = $false)][String]$TenantId,
-    #[Parameter(Mandatory = $false)][String]$ClientID,
-    #[Parameter(Mandatory = $false)][String]$Premium
+    [Parameter(Mandatory = $false)][String]$Secret,
+    [Parameter(Mandatory = $false)][String]$TenantId,
+    [Parameter(Mandatory = $false)][String]$ClientID,
+    [Parameter(Mandatory = $false)][String]$Premium
 )
 
 #region Helper Functions 
