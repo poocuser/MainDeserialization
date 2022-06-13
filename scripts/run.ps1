@@ -309,7 +309,11 @@ $body =
         $args += ("-TargetWorkspaceName", "$env:PROJECT_NAME-$($dev_var)")
         $cmd = "$ScriptPath\deploy.ps1"
 
-        Invoke-Expression "$ScriptToRun $scriptParams"
+        #Invoke-Expression "$ScriptToRun $scriptParams"
+        $p3 = Start-Process -FilePath $cmd -Wait -NoNewWindow -PassThru -ArgumentList $scriptParams
+        if ($p3.ExitCode -ne 0) {
+			Write-Error "$indention Failed to deploy .bim file !"
+		}
 
 
         #${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
