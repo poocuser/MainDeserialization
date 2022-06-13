@@ -294,9 +294,19 @@ $body =
             Invoke-PowerBIRestMethod -Url "https://api.powerbi.com/v1.0/myorg/groups/$($workspace.Id)/datasets/$($tempDataset.Id)" -Method Delete
         }
     }
-    $premiumWorkspace = 'Embedded'
-        $ScriptToRun= $PSScriptRoot + "\deploy.ps1"
-        .$ScriptToRun $premiumWorkspace "$env:PROJECT_NAME-$($dev_var)"
+        $premiumWorkspace = 'Embedded'
+        #$ScriptToRun= $PSScriptRoot + "\deploy.ps1"
+        #.$ScriptToRun -SourceWorkspaceName $premiumWorkspace -TargetWorkspaceName "$env:PROJECT_NAME-$($dev_var)"
+
+
+        #some processing
+        $ScriptPath = Split-Path $MyInvocation.InvocationName
+        $args = @()
+        $args += ("-SourceWorkspaceName", "Embedded")
+        $args += ("-TargetWorkspaceName", "$env:PROJECT_NAME-$($dev_var)")
+        $cmd = "$ScriptPath\deploy.ps1"
+
+        Invoke-Expression "$cmd $args"
 
 
         #${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
