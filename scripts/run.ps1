@@ -258,7 +258,7 @@ Function CiBuild {
         $dataset = Get-PowerBIDataset -WorkspaceId $workspace.Id | Where-Object { $_.Name -eq "$($pbix_file.BaseName)-Release" }
 
         #Bind to the merged dataset##
-                #$ScriptToRun= $PSScriptRoot + "\rebindReport.ps1"
+        #$ScriptToRun= $PSScriptRoot + "\rebindReport.ps1"
         #.$ScriptToRun -Workspace_Id $Workspace_Id -Report_Id $Report_Id -TargetDataset_Id $TargetDataset_Id
         #$root_path/scripts/rebindReport.ps1 -Workspace_Id $workspace.Id -Report_Id $report.Id -TargetDataset_Id $dataset.Id
         $WorkspaceId = $workspace.Id 
@@ -294,6 +294,11 @@ $body =
             Invoke-PowerBIRestMethod -Url "https://api.powerbi.com/v1.0/myorg/groups/$($workspace.Id)/datasets/$($tempDataset.Id)" -Method Delete
         }
     }
+        $ScriptToRun= $PSScriptRoot + "\deploy.ps1"
+        .$ScriptToRun -SourceWorkspaceName "Embedded" -TargetWorkspaceName "$env:PROJECT_NAME-$($dev_var)" -Premium $env:PREMIUM
+
+
+        #${{ github.action_path }}/scripts/deploy.ps1 -SourceWorkspaceName "$env:PROJECT_NAME-$($test_var)" -TargetWorkspaceName $env:PROJECT_NAME -Secret $env:PBI_CLIENT_SECRET -TenantId $env:PBI_TENANT_ID -ClientID $env:PBI_CLIENT_ID -Premium $env:PREMIUM
 }
 ########CD
 Function CD-Build {
