@@ -25,10 +25,10 @@ param
 
     [Parameter(Mandatory = $false)][bool]$CreateTargetWorkspaceIfNotExists = $true,
 
-    [Parameter(Mandatory = $false)][String]$Secret,
-    [Parameter(Mandatory = $false)][String]$TenantId,
-    [Parameter(Mandatory = $false)][String]$ClientID,
-    [Parameter(Mandatory = $false)][String]$Premium
+    #[Parameter(Mandatory = $false)][String]$Secret,
+    #[Parameter(Mandatory = $false)][String]$TenantId,
+    #[Parameter(Mandatory = $false)][String]$ClientID,
+    #[Parameter(Mandatory = $false)][String]$Premium
 )
 
 #region Helper Functions 
@@ -59,15 +59,15 @@ Write-Information "Deploy-Artifacts-Started...##################################
 # ==================================================================
 Assert-ModuleExists -ModuleName "MicrosoftPowerBIMgmt"
 #Login-PowerBI
-$tenant_id = $TenantId
-$client_id = $ClientID
-$client_secret = $Secret
-[securestring]$sec_client_secret = ConvertTo-SecureString $client_secret -AsPlainText -Force
-[pscredential]$credential = New-Object System.Management.Automation.PSCredential ($client_id, $sec_client_secret)
-Connect-PowerBIServiceAccount -Credential $credential -ServicePrincipal -TenantId $tenant_id
+#$tenant_id = $TenantId
+#$client_id = $ClientID
+#$client_secret = $Secret
+#[securestring]$sec_client_secret = ConvertTo-SecureString $client_secret -AsPlainText -Force
+#[pscredential]$credential = New-Object System.Management.Automation.PSCredential ($client_id, $sec_client_secret)
+#Connect-PowerBIServiceAccount -Credential $credential -ServicePrincipal -TenantId $tenant_id
 
-$SourceWorkspaceName = $args[0]
-$TargetWorkspaceName =$args[1]
+#$SourceWorkspaceName = $args[0]
+#$TargetWorkspaceName =$args[1]
 # ==================================================================
 # PART 2: Getting source and target workspace
 # ==================================================================
