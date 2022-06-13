@@ -25,9 +25,9 @@ param
 
     [bool] $CreateTargetWorkspaceIfNotExists = $true,
 
-    [Parameter(Mandatory = $true)][String]$Secret,
-    [Parameter(Mandatory = $true)][String]$TenantId,
-    [Parameter(Mandatory = $true)][String]$ClientID,
+    [Parameter(Mandatory = $false)][String]$Secret,
+    [Parameter(Mandatory = $false)][String]$TenantId,
+    [Parameter(Mandatory = $false)][String]$ClientID,
     [Parameter(Mandatory = $true)][String]$Premium
 )
 
