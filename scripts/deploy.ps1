@@ -62,6 +62,8 @@ $client_secret = $Secret
 [pscredential]$credential = New-Object System.Management.Automation.PSCredential ($client_id, $sec_client_secret)
 Connect-PowerBIServiceAccount -Credential $credential -ServicePrincipal -TenantId $tenant_id
 
+$SourceWorkspaceName = $args[0]
+$TargetWorkspaceName =$args[1]
 # ==================================================================
 # PART 2: Getting source and target workspace
 # ==================================================================
