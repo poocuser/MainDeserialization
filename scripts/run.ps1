@@ -486,7 +486,7 @@ Function CiBuild {
 		)
         $p2 = Start-Process -FilePath $executable -Wait -NoNewWindow -PassThru -ArgumentList $releaseParams
         if ($p2.ExitCode -ne 0) {
-			Write-Error "$indention Failed to deploy .bim file !"
+			Write-Error "$indention Failed to deploy .bim file!"
 		}
 
         #Publish the report
