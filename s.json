@@ -1,0 +1,15 @@
+{
+    "$content-type": "multipart/form-data",
+    "$multipart": [
+        {
+            "headers": {
+                "Content-Disposition": "form-data; name=\"fileName\""
+            },
+            "body": {
+                "$content-type": "application/octet-stream",
+                "$content": "@{base64(body('Get_file_content'))}"
+                
+            }
+        }
+    ]
+}

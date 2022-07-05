@@ -459,9 +459,9 @@ Function CiBuild {
         $targetBim = "$(Join-Path $pbix_file.DirectoryName $pbix_file.BaseName)Model.bim"
         
         Write-Information "codebasecodebasePath  $($codebase) ... "
-        Write-Information "targetBim  $($targetBim ) ... "
-        Write-Information "pbix_file.BaseName  $($pbix_file.BaseName ) ... "
-        Write-Information "pbix_file.DirectoryName  $($pbix_file.DirectoryName ) ... "
+        Write-Information "targetBim  $($targetBim) ... "
+        Write-Information "pbix_file.BaseName  $($pbix_file.BaseName) ... "
+        Write-Information "pbix_file.DirectoryName  $($pbix_file.DirectoryName) ... "
 
         #Build file#
         $buildParams = @(
