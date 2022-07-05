@@ -451,7 +451,7 @@ Function CiBuild {
         [parameter(Mandatory = $false)]$Premium
     )
     #Publish changed Pbix Files
-    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "Embedded" }
+    $workspace = Get-PowerBIWorkspace | Where-Object { $_.Name -like "PreX" }
     foreach ($pbix_file in $pbix_files) {
       
         $executable = Join-Path $root_path TabularEditor.exe
