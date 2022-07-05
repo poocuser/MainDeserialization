@@ -316,6 +316,8 @@ runs:
           git stash apply
           git add **/*.database.json
           git add **/*.json
+          git add **/*.bim
+          git add **/*Model.bim
           git status --porcelain
           git commit -am "Automated extracton of JSON files from PBIX via ${{ github.workflow }} - original changes by ${{ github.actor }}"
           git push
